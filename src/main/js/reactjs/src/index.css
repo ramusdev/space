@@ -1,0 +1,68 @@
+/* Sidebar */
+.sidenav {
+    height: 100%;
+    width: 160px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    overflow-x: hidden;
+    background-color: #404a59;
+}
+.sidenav__logo {
+    background-color: #262d37;
+    color: #d9dbde;
+    padding: 10px 20px;
+    font-weight: bold;
+}
+.sidenav__bar {
+    padding: 10px 20px;
+}
+
+.sidenav a {
+    color: #d9dbde;
+    display: block;
+    font-weight: bold;
+    margin: 10px 0;
+    font-size: 20px;
+}
+/* Main */
+.main {
+    margin-left: 150px;
+    font-size: 16px;
+    padding: 20px 0px;
+}
+
+/* Base */
+.nobold {
+    font-weight: normal;
+}
+
+.title-page {
+    color: #484848;
+    margin: 0px 5px 20px 5px;
+    font-size: 23px;
+    font-weight: bold;
+}
+
+/* Table */
+.table {
+    color: #484848;
+}
+.table__head {
+    background: #f9f9f9;
+}
+
+/* Buttons */
+button {
+    margin: 0 5px;
+    font-weight: bold !important;
+}
+
+.list-group{
+    height: 290px;
+    margin-bottom: 10px;
+    overflow:scroll;
+    -webkit-overflow-scrolling: touch;
+}
+
