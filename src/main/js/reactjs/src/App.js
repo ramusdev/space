@@ -7,6 +7,8 @@ import TouristEdit from "./Tourists/TouristEdit";
 import TouristSingle from "./Tourists/TouristSingle";
 import ShipAdd from "./Ship/ShipAdd";
 import ShipList from "./Ship/ShipList";
+import ShipSingle from "./Ship/ShipSingle";
+import ShipEdit from "./Ship/ShipEdit";
 
 function App() {
 
@@ -22,6 +24,8 @@ function App() {
               <Route path="/tourist/edit/:id" exact component={TouristEdit} />
               <Route path="/ship/add" exact component={ShipAdd} />
               <Route path="/ship/list" exact component={ShipList} />
+              <Route path="/ship/:id" exact component={ShipSingle} />
+              <Route path="/ship/edit/:id" exact component={ShipEdit} />
             </Switch>
           </div>
         </BrowserRouter>

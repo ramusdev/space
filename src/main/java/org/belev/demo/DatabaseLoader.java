@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 
 public class DatabaseLoader implements CommandLineRunner {
-    private final EmployeeRepository repository;
+    private final TouristRepository repository;
 
     @Autowired
-    public DatabaseLoader(EmployeeRepository repository) {
+    public DatabaseLoader(TouristRepository repository) {
         this.repository = repository;
     }
 

@@ -86,7 +86,7 @@ export default class TouristList extends React.Component {
     deleteItem(userId, index) {
         console.log("Click delete -->");
 
-        const urlRequest = "http://127.0.0.1:8080/api/employee/" + userId;
+        const urlRequest = "http://127.0.0.1:8080/api/tourist/" + userId;
         fetch(urlRequest, {
             method: 'DELETE',
         }).then(res => res.text())

@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-public class Employee implements Serializable {
+public class Tourist implements Serializable {
     @Id
     @GeneratedValue
     private Long id;
@@ -15,26 +15,26 @@ public class Employee implements Serializable {
     private String gender;
     private String country;
     private String dateOfBirth;
-    int shipKey;
+    @Transient
+    private Long shipIdentifier;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ship_id")
+    private Ship ship = null;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "ship_id", nullable = false)
-    private Ship ship;
+    private Tourist() {}
 
-    private Employee() {}
-
-    public Employee(String firstName, String lastName, String description, String gender, String country, String dateOfBirth, int shipKey, Ship ship) {
+    public Tourist(String firstName, String lastName, String description, String gender, String country, String dateOfBirth, long shipIdentifier, Ship ship) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.description = description;
         this.gender = gender;
         this.country = country;
         this.dateOfBirth = dateOfBirth;
-        this.shipKey = shipKey;
+        this.shipIdentifier = shipIdentifier;
         this.ship = ship;
     }
 
-    public Employee(String firstName, String lastName, String description, String gender, String country, String dateOfBirth) {
+    public Tourist(String firstName, String lastName, String description, String gender, String country, String dateOfBirth) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.description = description;
@@ -47,11 +47,11 @@ public class Employee implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Employee employee = (Employee) o;
-        return Objects.equals(id, employee.id) &&
-                Objects.equals(firstName, employee.firstName) &&
-                Objects.equals(lastName, employee.lastName) &&
-                Objects.equals(description, employee.description);
+        Tourist tourist = (Tourist) o;
+        return Objects.equals(id, tourist.id) &&
+                Objects.equals(firstName, tourist.firstName) &&
+                Objects.equals(lastName, tourist.lastName) &&
+                Objects.equals(description, tourist.description);
     }
 
     @Override
@@ -123,12 +123,12 @@ public class Employee implements Serializable {
         this.ship = ship;
     }
 
-    public int getShipKey() {
-        return this.shipKey;
+    public Long getShipIdentifier() {
+        return this.shipIdentifier;
     }
 
-    public void setShipKey(int shipKey) {
-        this.shipKey = shipKey;
+    public void setShipIdentifier(long shipId) {
+        this.shipIdentifier = shipId;
     }
 
     @Override

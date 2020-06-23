@@ -1,28 +1,38 @@
 import React from 'react'
 
-export default class ShipAdd extends React.Component {
+export default class ShipEdit extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            direction: '',
-            price: '',
-            seats: '',
-            departureDate: '',
-            arrivalDate: '',
+            id: "",
+            direction: "",
+            price: "",
+            seats: "",
+            departureDate: "",
+            arrivalDate: "",
             tourists: [],
             addedTourists: []
         };
 
         this.fetchData = this.fetchData.bind(this);
+        this.fetchTourists = this.fetchTourists.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
 
     render() {
         console.log("Render -->");
-        const { tourists, addedTourists } = this.state;
+        const { id,
+            direction,
+            price,
+            seats,
+            departureDate,
+            arrivalDate,
+            tourists,
+            addedTourists
+        } = this.state;
 
         return (
             <div className="shipadd-container">
@@ -30,26 +40,26 @@ export default class ShipAdd extends React.Component {
                     <div className="container">
                         <div className="row">
                             <div className="col-12">
-                                <div className="title-page">Ship add</div>
+                                <div className="title-page">Ship edit</div>
                                 <div className="form-group">
                                     <input type="text" className="form-control" name="direction" placeholder="Direction"
-                                           onChange={this.handleChange} value={this.state.direction}></input>
+                                           onChange={this.handleChange} value={direction}></input>
                                 </div>
                                 <div className="form-group">
                                     <input type="text" className="form-control" name="price" placeholder="Price"
-                                           onChange={this.handleChange} value={this.state.price}></input>
+                                           onChange={this.handleChange} value={price}></input>
                                 </div>
                                 <div className="form-group">
                                     <input type="text" className="form-control" name="seats" placeholder="Seats"
-                                           onChange={this.handleChange} value={this.state.seats}></input>
+                                           onChange={this.handleChange} value={seats}></input>
                                 </div>
                                 <div className="form-group">
                                     <input type="text" className="form-control" name="departureDate" placeholder="Departure date"
-                                           onChange={this.handleChange} value={this.state.departureDate}></input>
+                                           onChange={this.handleChange} value={departureDate}></input>
                                 </div>
                                 <div className="form-group">
                                     <input type="text" className="form-control" name="arrivalDate" placeholder="Arrival date"
-                                           onChange={this.handleChange} value={this.state.arrivalDate}></input>
+                                           onChange={this.handleChange} value={arrivalDate}></input>
                                 </div>
                             </div>
                         </div>
@@ -73,23 +83,38 @@ export default class ShipAdd extends React.Component {
                         </div>
                         <div className="row">
                             <div className="col-12">
-                                <button className="btn btn-outline-primary" type="submit">Add ship</button>
+                                <button className="btn btn-outline-primary" type="submit">Edit ship</button>
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
-
         )
     }
 
     componentDidMount() {
         console.log("Did Mount -->");
-
-        this.fetchData();
+        this.fetchData(this.props.match.params.id);
+        this.fetchTourists();
     }
 
-    fetchData() {
+    fetchData(id) {
+        const shipUrl = "http://127.0.0.1:8080/api/ship/" + id;
+        fetch(shipUrl)
+            .then(res => res.json())
+            .then(result => {
+                this.setState({
+                    id: result.id,
+                    direction: result.direction,
+                    arrivalDate: result.arrivalDate,
+                    departureDate: result.departureDate,
+                    seats: result.seats,
+                    price: result.price
+                })
+            });
+    }
+
+    fetchTourists() {
         const url = "http://127.0.0.1:8080/api/tourist/all";
         fetch(url)
             .then(res => res.json())
@@ -112,17 +137,19 @@ export default class ShipAdd extends React.Component {
 
     handleSubmit(event) {
         console.log("Form submited -->");
-
         event.preventDefault();
-        console.log(JSON.stringify(this.state));
+        const id = this.props.match.params.id;
+        //const {item} = this.state;
+        //const item = this.state;
+        //console.log(JSON.stringify(this.state));
 
-        const url = "http://127.0.0.1:8080/api/ship/add";
+        const url = "http://127.0.0.1:8080/api/ship/update/" + id;
         fetch(url, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            method: "POST",
+            method: "PUT",
             dataType: 'json',
             body: JSON.stringify(this.state)
         });
@@ -153,8 +180,8 @@ export default class ShipAdd extends React.Component {
         tourists.push(tourist[0]);
 
         this.setState({
-           tourists: tourists,
-           addedTourists: addedTourists
+            tourists: tourists,
+            addedTourists: addedTourists
         });
     }
 }

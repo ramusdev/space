@@ -1,26 +1,19 @@
 package org.belev.demo;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @RestController
 @CrossOrigin(origins = {"http://127.0.0.1:3000", "http://127.0.0.1:8080"})
 @RequestMapping("/api/tourist")
 public class ApiTouristController {
-    private EmployeeRepository employeeRepository;
+    private TouristRepository touristRepository;
     private ShipRepository shipRepository;
 
-    public ApiTouristController(ShipRepository shipRepository, EmployeeRepository employeeRepository) {
+    public ApiTouristController(ShipRepository shipRepository, TouristRepository touristRepository) {
         this.shipRepository = shipRepository;
-        this.employeeRepository = employeeRepository;
+        this.touristRepository = touristRepository;
     }
 
     @GetMapping(value = "/test")
@@ -37,7 +30,7 @@ public class ApiTouristController {
 
         Ship ship2 = shipRepository.findById(new Long(3)).get();
 
-        Employee employee = new Employee(
+        Tourist tourist = new Tourist(
                 "First name",
                 "Last name",
                 "Some text",
@@ -48,61 +41,58 @@ public class ApiTouristController {
                 ship2
         );
 
-        employeeRepository.save(employee);
+        touristRepository.save(tourist);
 
-        System.out.println(employeeRepository.findAll());
+        System.out.println(touristRepository.findAll());
         return "Custom employee added";
     }
 
     @GetMapping(value = "/{id}")
-    public Optional<Employee> getById(@PathVariable Long id) {
-        return employeeRepository.findById(id);
+    public Optional<Tourist> getById(@PathVariable Long id) {
+        return touristRepository.findById(id);
     }
 
     @GetMapping(value = "/all")
-    public Iterable<Employee> allEmployees() {
-        return employeeRepository.findAll();
+    public Iterable<Tourist> allEmployees() {
+        return touristRepository.findAll();
     }
 
     @DeleteMapping(value = "/{id}")
     public String delete(@PathVariable Long id) {
-        employeeRepository.deleteById(id);
+        touristRepository.deleteById(id);
 
         return "Item deleted";
     }
 
+    // Add new tourist
     @PostMapping(value = "/add")
-    public String addTourist(@RequestBody Employee employee) {
+    public String addTourist(@RequestBody Tourist tourist) {
+        long shipId = tourist.getShipIdentifier();
+        if (shipId != 0) {
+            Ship ship = shipRepository.findById(shipId).get();
+            tourist.setShip(ship);
+        } else {
+            tourist.setShip(null);
+        }
 
-        System.out.println(employee);
-        Ship ship = shipRepository.findById((long)employee.getShipKey()).get();
-        System.out.println(ship);
+        touristRepository.save(tourist);
 
-        employee.setShip(ship);
-        employeeRepository.save(employee);
-
-        return employee.toString();
+        return "Tourist added";
     }
 
+    // Update tourist
     @PutMapping(value = "/update/{id}")
-    public String update(@PathVariable Long id, @RequestBody Employee newEmployee) {
-        Optional<Employee> updatedEmployee = employeeRepository.findById(id);
+    public String update(@PathVariable Long id, @RequestBody Tourist updatedTourist) {
+        updatedTourist.setId(id);
+        long shipId = updatedTourist.getShipIdentifier();
+        if (shipId != 0) {
+            Ship ship = shipRepository.findById(shipId).get();
+            updatedTourist.setShip(ship);
+        } else {
+            updatedTourist.setShip(null);
+        }
 
-        /*
-        Optional<Employee> updatedEmployeeId = updatedEmployee.map(employee -> {
-            employee.setFirstName(newEmployee.getFirstName());
-            employee.setLastName(newEmployee.getLastName());
-            employee.setCountry(newEmployee.getCountry());
-            employee.setDateOfBirth(newEmployee.getDateOfBirth());
-            employee.setGender(newEmployee.getGender());
-            employee.setDescription(newEmployee.getDescription());
-
-            return employeeRepository.save(employee);
-        });
-        */
-
-        newEmployee.setId(id);
-        employeeRepository.save(newEmployee);
+        touristRepository.save(updatedTourist);
 
         return "Updated";
     }

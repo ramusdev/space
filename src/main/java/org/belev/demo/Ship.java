@@ -4,7 +4,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 public class Ship implements Serializable {
@@ -18,8 +17,7 @@ public class Ship implements Serializable {
     private String arrivalDate;
 
     @OneToMany(mappedBy="ship", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    //private Set<Employee> employees;
-    private List<Employee> employees = new ArrayList<>();
+    private List<Tourist> tourists = new ArrayList<Tourist>();
 
     private Ship() {}
 
@@ -31,9 +29,9 @@ public class Ship implements Serializable {
         this.arrivalDate = arrivalDate;
     }
 
-    public void addEmployee(Employee employee) {
-        employees.add(employee);
-        employee.setShip(this);
+    public void addTourist(Tourist tourist) {
+        tourist.setShip(this);
+        tourists.add(tourist);
     }
 
     public Long getId() {
@@ -85,10 +83,13 @@ public class Ship implements Serializable {
     }
 
     public String toString() {
-        return "Ship {direction: " + direction +
-                "/nprice: " + price +
-                "/nseats: " + seats +
-                "/ndepartureDate: " + departureDate +
-                "/narrivalDate: " + arrivalDate + "}";
+        return "Ship: " +
+                "\nid: " + id +
+                "\ndirection: " + direction +
+                "\nprice: " + price +
+                "\nseats: " + seats +
+                "\ndepartureDate: " + departureDate +
+                "\narrivalDate: " + arrivalDate +
+                "\ntourists: " + tourists;
     }
 }

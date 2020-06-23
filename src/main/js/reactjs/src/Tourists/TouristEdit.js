@@ -11,48 +11,74 @@ export default class TouristEdit extends React.Component {
             gender: '',
             country: '',
             dateOfBirth: '',
+            shipIdentifier: '',
+            ships: [],
             description: ''
         };
 
-        this.fetchData = this.fetchData.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
 
     render() {
         console.log("Render -->");
-        //const {data} = this.state;
+        const { ships,
+            firstName,
+            lastName,
+            gender,
+            country,
+            dateOfBirth,
+            description,
+            shipIdentifier
+        } = this.state;
+        console.log(this.state)
 
         return (
-            <div className="tourist-add">
+            <div className="tourist-container">
                 <form onSubmit={this.handleSubmit}>
-                    <div className="title-page">Tourists edit id: {this.props.match.params.id}</div>
-                    <div className="form-group">
-                        <input type="text" className="form-control" name="firstName" placeholder="First name"
-                               onChange={this.handleChange} value={this.state.firstName}></input>
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-12">
+                                <div className="title-page">Tourists edit</div>
+                                <div className="form-group">
+                                    <input type="text" className="form-control" name="firstName" placeholder="First name"
+                                           onChange={this.handleChange} value={firstName}></input>
+                                </div>
+                                <div className="form-group">
+                                    <input type="text" className="form-control" name="lastName" placeholder="Last name"
+                                           onChange={this.handleChange} value={lastName}></input>
+                                </div>
+                                <div className="form-group">
+                                    <input type="text" className="form-control" name="gender" placeholder="Gender"
+                                           onChange={this.handleChange} value={gender}></input>
+                                </div>
+                                <div className="form-group">
+                                    <input type="text" className="form-control" name="country" placeholder="Country"
+                                           onChange={this.handleChange} value={country}></input>
+                                </div>
+                                <div className="form-group">
+                                    <input type="text" className="form-control" name="dateOfBirth" placeholder="Date of birth"
+                                           onChange={this.handleChange} value={dateOfBirth}></input>
+                                </div>
+                                <div className="form-group">
+                                    <label form="ship">Select the ship</label>
+                                    <select className="form-control" id="ship" name="shipIdentifier" onChange={this.handleChange}>
+                                        <option value="0">None</option>
+                                        {ships.map(ship => {
+                                            let sel = shipIdentifier === ship.id ? "selected" : "";
+                                            return <option selected={sel} key={ship.id} value={ship.id}>{ship.direction} - {ship.departureDate}</option>
+                                        })}
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="about">Information about tourist</label>
+                                    <textarea type="about" className="form-control" id="about" name="description" rows="3" placeholder="Some information about passenger"
+                                              onChange={this.handleChange} value={description}></textarea>
+                                </div>
+                                <button className="btn btn-outline-primary" type="submit">Update</button>
+                            </div>
+                        </div>
                     </div>
-                    <div className="form-group">
-                        <input type="text" className="form-control" name="lastName" placeholder="Last name"
-                               onChange={this.handleChange} value={this.state.lastName}></input>
-                    </div>
-                    <div className="form-group">
-                        <input type="text" className="form-control" name="gender" placeholder="Gender"
-                               onChange={this.handleChange} value={this.state.gender}></input>
-                    </div>
-                    <div className="form-group">
-                        <input type="text" className="form-control" name="country" placeholder="Country"
-                               onChange={this.handleChange} value={this.state.country}></input>
-                    </div>
-                    <div className="form-group">
-                        <input type="text" className="form-control" name="dateOfBirth" placeholder="Date of birth"
-                               onChange={this.handleChange} value={this.state.dateOfBirth}></input>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="about">Information about tourist</label>
-                        <textarea type="about" className="form-control" id="about" name="description" rows="3" placeholder="Some information about passenger"
-                                  onChange={this.handleChange} value={this.state.description}></textarea>
-                    </div>
-                    <button className="btn btn-outline-primary" type="submit">Add tourist</button>
                 </form>
             </div>
         )
@@ -61,22 +87,36 @@ export default class TouristEdit extends React.Component {
     componentDidMount() {
         console.log("Did Mount -->");
         this.fetchData(this.props.match.params.id);
+        this.fetchShips();
     }
 
     fetchData(id) {
-        const url = "http://127.0.0.1:8080/api/employees/" + id;
+        const url = "http://127.0.0.1:8080/api/tourist/" + id;
         fetch(url)
             .then(res => res.json())
             .then(result => {
+                let ship = result.ship ? result.ship.id : 0
                 this.setState({
                     firstName: result.firstName,
                     lastName: result.lastName,
                     gender: result.gender,
                     country: result.country,
                     dateOfBirth: result.dateOfBirth,
-                    description: result.description
+                    description: result.description,
+                    shipIdentifier: ship
                 })
-            })
+            });
+    }
+
+    fetchShips() {
+        const url = "http://127.0.0.1:8080/api/ship/all";
+        fetch(url)
+            .then(res => res.json())
+            .then(res => {
+                this.setState({
+                    ships: res
+                })
+            });
     }
 
     handleChange(event) {
@@ -87,21 +127,15 @@ export default class TouristEdit extends React.Component {
         this.setState({
             [name]: value,
         });
-
-        //let item = {...this.state.item};
-        //item[name] = value;
-        //this.setState({item});
     }
 
     handleSubmit(event) {
         console.log("Form submited -->");
-
         event.preventDefault();
-        //const {item} = this.state;
-        //const item = this.state;
+        const id =  this.props.match.params.id;
         console.log(JSON.stringify(this.state));
 
-        const url = "/api/employees/update/" + this.props.match.params.id;
+        const url = "http://127.0.0.1:8080/api/tourist/update/" + id;
         fetch(url, {
             headers: {
                 'Accept': 'application/json',

@@ -7,7 +7,7 @@ module.exports = {
     mode: 'development',
     output: {
         path: __dirname,
-        filename: '../../resources/static/built/bundle.js'
+        filename: '/resources/static/built/bundle.js'
     },
     module: {
         rules: [
