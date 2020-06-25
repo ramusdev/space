@@ -11,8 +11,8 @@ export default class ShipAdd extends React.Component {
             seats: '',
             departureDate: '',
             arrivalDate: '',
-            tourists: [],
-            addedTourists: []
+            touristsAll: [],
+            touristsAdded: []
         };
 
         this.fetchData = this.fetchData.bind(this);
@@ -22,7 +22,7 @@ export default class ShipAdd extends React.Component {
 
     render() {
         console.log("Render -->");
-        const { tourists, addedTourists } = this.state;
+        const { touristsAll, touristsAdded } = this.state;
 
         return (
             <div className="shipadd-container">
@@ -56,7 +56,7 @@ export default class ShipAdd extends React.Component {
                         <div className="row">
                             <div className="col-6">
                                 <ul className="list-group">
-                                    {addedTourists.map((tourist, index) => (
+                                    {touristsAdded.map((tourist, index) => (
                                         <li key={tourist.id} className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">{tourist.firstName + ' ' + tourist.lastName}<button
                                             onClick={this.handleRemoveTourist.bind(this, index)} className="btn btn-outline-danger btn-sm">Remove</button></li>
                                     ))}
@@ -64,7 +64,7 @@ export default class ShipAdd extends React.Component {
                             </div>
                             <div className="col-6">
                                 <ul className="list-group">
-                                    {tourists.map((tourist, index) => (
+                                    {touristsAll.map((tourist, index) => (
                                         <li key={tourist.id} className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">{tourist.firstName + ' ' + tourist.lastName}<button
                                             onClick={this.handleAddTourist.bind(this, index)} className="btn btn-outline-primary btn-sm">Add</button></li>
                                     ))}
@@ -95,7 +95,7 @@ export default class ShipAdd extends React.Component {
             .then(res => res.json())
             .then(result => {
                 this.setState({
-                    tourists: result
+                    touristsAll: result
                 })
             });
     }
@@ -131,30 +131,30 @@ export default class ShipAdd extends React.Component {
     handleAddTourist(index) {
         console.log("Add tourist -->");
 
-        let tourists = Object.assign([], this.state.tourists);
-        let tourist = tourists.splice(index, 1);
+        let touristsAll = Object.assign([], this.state.touristsAll);
+        let touristToAdd = touristsAll.splice(index, 1);
 
-        let addedTourists = Object.assign([], this.state.addedTourists);
-        addedTourists.push(tourist[0]);
+        let touristsAdded = Object.assign([], this.state.touristsAdded);
+        touristsAdded.push(touristToAdd[0]);
 
         this.setState({
-            tourists: tourists,
-            addedTourists: addedTourists
+            touristsAdded: touristsAdded,
+            touristsAll: touristsAll
         });
     }
 
     handleRemoveTourist(index) {
         console.log("Remove tourist -->")
 
-        let addedTourists = Object.assign([], this.state.addedTourists);
-        let tourist = addedTourists.splice(index, 1);
+        let touristsAdded = Object.assign([], this.state.touristsAdded);
+        let touristToAdd = touristsAdded.splice(index, 1);
 
-        let tourists = Object.assign([], this.state.tourists);
-        tourists.push(tourist[0]);
+        let touristsAll = Object.assign([], this.state.touristsAll);
+        touristsAll.push(touristToAdd[0]);
 
         this.setState({
-           tourists: tourists,
-           addedTourists: addedTourists
+            touristsAdded: touristsAdded,
+            touristsAll: touristsAll
         });
     }
 }

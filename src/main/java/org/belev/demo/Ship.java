@@ -1,5 +1,11 @@
 package org.belev.demo;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
+import org.apache.tomcat.util.json.JSONParser;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,23 +21,31 @@ public class Ship implements Serializable {
     private int seats;
     private String departureDate;
     private String arrivalDate;
+    @Transient
+    private String touristsAdded;
 
     @OneToMany(mappedBy="ship", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Tourist> tourists = new ArrayList<Tourist>();
 
     private Ship() {}
 
-    public Ship(String direction, int price, int seats, String departureDate, String arrivalDate) {
+    public Ship(String direction, int price, int seats, String departureDate, String arrivalDate, String touristsAdded) {
         this.direction = direction;
         this.price = price;
         this.seats = seats;
         this.departureDate = departureDate;
         this.arrivalDate = arrivalDate;
+        this.touristsAdded = touristsAdded;
     }
 
     public void addTourist(Tourist tourist) {
         tourist.setShip(this);
         tourists.add(tourist);
+    }
+
+    public void setTourists(String tourists) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Tourist[] cars2 = objectMapper.readValue(tourists, Tourist[].class);
     }
 
     public Long getId() {
@@ -58,6 +72,10 @@ public class Ship implements Serializable {
         return arrivalDate;
     }
 
+    public String getTouristsAdded() {
+        return this.touristsAdded;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -80,6 +98,10 @@ public class Ship implements Serializable {
 
     public void setArrivalDate(String arrivalDate) {
         this.arrivalDate = arrivalDate;
+    }
+
+    public void setTouristsAdded(String touristsAdded) {
+        this.touristsAdded = touristsAdded;
     }
 
     public String toString() {
