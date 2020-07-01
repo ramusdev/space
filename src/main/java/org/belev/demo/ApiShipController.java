@@ -1,8 +1,8 @@
 package org.belev.demo;
-import net.minidev.json.JSONArray;
+
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -10,24 +10,30 @@ import java.util.Optional;
 @RequestMapping("/api/ship")
 public class ApiShipController {
     private ShipRepository shipRepository;
+    private TouristRepository touristRepository;
 
-    public ApiShipController(ShipRepository shipRepository) {
+    public ApiShipController(ShipRepository shipRepository, TouristRepository touristRepository) {
         this.shipRepository = shipRepository;
+        this.touristRepository = touristRepository;
     }
 
     // Single ship
     @GetMapping(value = "/{id}")
     public Optional<Ship> single(@PathVariable Long id) {
-        return shipRepository.findById(id);
+        Optional<Ship> ship = shipRepository.findById(id);
+
+        return ship;
     }
 
     // Add new ship
     @PostMapping(value = "/add")
     public String add(@RequestBody Ship ship) {
-        // System.out.println(ship);
-        // JSONArray touristsJsonArray = ship.getTouristsAdded();
-        // System.out.println(jsonTourists);
-        ship.setTourists(ship.getTouristsAdded());
+        List<Tourist> touristNotFull = ship.getTouristsAdded();
+        for (int i = 0; i < touristNotFull.size(); i++) {
+            Long touristId = touristNotFull.get(i).getId();
+            Tourist tourist = touristRepository.findById(touristId).get();
+            ship.addTourist(tourist);
+        }
 
         shipRepository.save(ship);
 
@@ -37,8 +43,15 @@ public class ApiShipController {
     // Update ship
     @PutMapping(value = "/update/{id}")
     public String update(@RequestBody Ship updatedShip, @PathVariable Long id) {
-        // Optional<Ship> updatedShip = shipRepository.findById(id);
         updatedShip.setId(id);
+        List<Tourist> touristNotFull = updatedShip.getTouristsAdded();
+
+        for (int i = 0; i < touristNotFull.size(); i++) {
+            Long touristId = touristNotFull.get(i).getId();
+            Tourist tourist = touristRepository.findById(touristId).get();
+            updatedShip.addTourist(tourist);
+        }
+
         shipRepository.save(updatedShip);
 
         return "Ship updated";

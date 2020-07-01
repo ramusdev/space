@@ -1,4 +1,5 @@
 import React from 'react'
+import {forEach} from "react-bootstrap/cjs/ElementChildren";
 
 export default class ShipEdit extends React.Component {
 
@@ -18,6 +19,7 @@ export default class ShipEdit extends React.Component {
 
         this.fetchData = this.fetchData.bind(this);
         this.fetchTourists = this.fetchTourists.bind(this);
+        this.replaceAddedTourists = this.replaceAddedTourists.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
@@ -94,8 +96,9 @@ export default class ShipEdit extends React.Component {
 
     componentDidMount() {
         console.log("Did Mount -->");
-        this.fetchData(this.props.match.params.id);
-        this.fetchTourists();
+
+        let shipId = this.props.match.params.id;
+        this.fetchData(shipId);
     }
 
     fetchData(id) {
@@ -109,8 +112,15 @@ export default class ShipEdit extends React.Component {
                     arrivalDate: result.arrivalDate,
                     departureDate: result.departureDate,
                     seats: result.seats,
-                    price: result.price
+                    price: result.price,
+                    addedTourists: result.tourists
                 })
+            })
+            .then(res => {
+                this.fetchTourists();
+            })
+            .then(res => {
+                this.replaceAddedTourists();
             });
     }
 
@@ -119,10 +129,29 @@ export default class ShipEdit extends React.Component {
         fetch(url)
             .then(res => res.json())
             .then(result => {
+                console.log(result);
                 this.setState({
                     tourists: result
                 })
             });
+    }
+
+    replaceAddedTourists() {
+        // let touristsAll = result;
+        let { addedTourists, tourists } = this.state;
+        console.log(this.state);
+
+        tourists.forEach(function(element, index) {
+            addedTourists.forEach(function(elementInner, indexInner) {
+                if (element.id == elementInner.id) {
+                    tourists.splice(index, 1);
+                }
+            });
+        });
+
+        this.setState({
+            tourists: tourists,
+        });
     }
 
     handleChange(event) {

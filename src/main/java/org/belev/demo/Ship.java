@@ -1,10 +1,6 @@
 package org.belev.demo;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
-import org.apache.tomcat.util.json.JSONParser;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,14 +18,15 @@ public class Ship implements Serializable {
     private String departureDate;
     private String arrivalDate;
     @Transient
-    private String touristsAdded;
+    private List<Tourist> touristsAdded = new ArrayList<Tourist>();
 
-    @OneToMany(mappedBy="ship", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="ship", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Tourist> tourists = new ArrayList<Tourist>();
 
     private Ship() {}
 
-    public Ship(String direction, int price, int seats, String departureDate, String arrivalDate, String touristsAdded) {
+    public Ship(String direction, int price, int seats, String departureDate, String arrivalDate, List<Tourist> touristsAdded) {
         this.direction = direction;
         this.price = price;
         this.seats = seats;
@@ -40,12 +37,12 @@ public class Ship implements Serializable {
 
     public void addTourist(Tourist tourist) {
         tourist.setShip(this);
-        tourists.add(tourist);
+        this.tourists.add(tourist);
     }
 
-    public void setTourists(String tourists) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Tourist[] cars2 = objectMapper.readValue(tourists, Tourist[].class);
+    public void removeTourist(Tourist tourist) {
+        tourist.setShip(null);
+        this.tourists.remove(tourist);
     }
 
     public Long getId() {
@@ -64,6 +61,10 @@ public class Ship implements Serializable {
         return seats;
     }
 
+    public List<Tourist> getTourists() {
+        return this.tourists;
+    }
+
     public String getDepartureDate() {
         return departureDate;
     }
@@ -72,7 +73,7 @@ public class Ship implements Serializable {
         return arrivalDate;
     }
 
-    public String getTouristsAdded() {
+    public List<Tourist> getTouristsAdded() {
         return this.touristsAdded;
     }
 
@@ -100,7 +101,7 @@ public class Ship implements Serializable {
         this.arrivalDate = arrivalDate;
     }
 
-    public void setTouristsAdded(String touristsAdded) {
+    public void setTouristsAdded(List<Tourist> touristsAdded) {
         this.touristsAdded = touristsAdded;
     }
 
