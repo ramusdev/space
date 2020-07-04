@@ -45,6 +45,8 @@ public class ApiShipController {
     public String update(@RequestBody Ship updatedShip, @PathVariable Long id) {
         updatedShip.setId(id);
         List<Tourist> touristNotFull = updatedShip.getTouristsAdded();
+        System.out.println("-------------------------->");
+        System.out.println(touristNotFull.size());
 
         for (int i = 0; i < touristNotFull.size(); i++) {
             Long touristId = touristNotFull.get(i).getId();

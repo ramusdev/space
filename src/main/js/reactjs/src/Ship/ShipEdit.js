@@ -13,11 +13,11 @@ export default class ShipEdit extends React.Component {
             seats: "",
             departureDate: "",
             arrivalDate: "",
-            tourists: [],
-            addedTourists: []
+            touristsAll: [],
+            touristsAdded: []
         };
 
-        this.fetchData = this.fetchData.bind(this);
+        this.fetchShip = this.fetchShip.bind(this);
         this.fetchTourists = this.fetchTourists.bind(this);
         this.replaceAddedTourists = this.replaceAddedTourists.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -32,8 +32,8 @@ export default class ShipEdit extends React.Component {
             seats,
             departureDate,
             arrivalDate,
-            tourists,
-            addedTourists
+            touristsAll,
+            touristsAdded
         } = this.state;
 
         return (
@@ -68,7 +68,7 @@ export default class ShipEdit extends React.Component {
                         <div className="row">
                             <div className="col-6">
                                 <ul className="list-group">
-                                    {addedTourists.map((tourist, index) => (
+                                    {touristsAdded.map((tourist, index) => (
                                         <li key={tourist.id} className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">{tourist.firstName + ' ' + tourist.lastName}<button
                                             onClick={this.handleRemoveTourist.bind(this, index)} className="btn btn-outline-danger btn-sm">Remove</button></li>
                                     ))}
@@ -76,7 +76,7 @@ export default class ShipEdit extends React.Component {
                             </div>
                             <div className="col-6">
                                 <ul className="list-group">
-                                    {tourists.map((tourist, index) => (
+                                    {touristsAll.map((tourist, index) => (
                                         <li key={tourist.id} className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">{tourist.firstName + ' ' + tourist.lastName}<button
                                             onClick={this.handleAddTourist.bind(this, index)} className="btn btn-outline-primary btn-sm">Add</button></li>
                                     ))}
@@ -97,60 +97,58 @@ export default class ShipEdit extends React.Component {
     componentDidMount() {
         console.log("Did Mount -->");
 
-        let shipId = this.props.match.params.id;
-        this.fetchData(shipId);
+        let id = this.props.match.params.id;
+        this.fetchShip(id)
+            .then(ship => {
+                // console.log(ship);
+                this.setState({
+                    id: ship.id,
+                    direction: ship.direction,
+                    arrivalDate: ship.arrivalDate,
+                    departureDate: ship.departureDate,
+                    seats: ship.seats,
+                    price: ship.price,
+                    touristsAdded: ship.tourists
+                });
+            })
+            .then(resp => this.fetchTourists())
+            .then(resp => this.replaceAddedTourists(resp));
     }
 
-    fetchData(id) {
-        const shipUrl = "http://127.0.0.1:8080/api/ship/" + id;
-        fetch(shipUrl)
-            .then(res => res.json())
-            .then(result => {
-                this.setState({
-                    id: result.id,
-                    direction: result.direction,
-                    arrivalDate: result.arrivalDate,
-                    departureDate: result.departureDate,
-                    seats: result.seats,
-                    price: result.price,
-                    addedTourists: result.tourists
-                })
-            })
-            .then(res => {
-                this.fetchTourists();
-            })
-            .then(res => {
-                this.replaceAddedTourists();
-            });
+    fetchShip(id) {
+        const url = "http://127.0.0.1:8080/api/ship/" + id;
+        return fetch(url)
+            .then(response => response.json());
     }
 
     fetchTourists() {
         const url = "http://127.0.0.1:8080/api/tourist/all";
-        fetch(url)
-            .then(res => res.json())
-            .then(result => {
-                console.log(result);
-                this.setState({
-                    tourists: result
-                })
-            });
+        return fetch(url)
+            .then(response => response.json());
+            // .then(resp => {
+                // this.replaceAddedTourists(resp);
+            // });
     }
 
-    replaceAddedTourists() {
-        // let touristsAll = result;
-        let { addedTourists, tourists } = this.state;
-        console.log(this.state);
+    replaceAddedTourists(tourists) {
+        let { touristsAdded } = this.state;
 
-        tourists.forEach(function(element, index) {
-            addedTourists.forEach(function(elementInner, indexInner) {
-                if (element.id == elementInner.id) {
-                    tourists.splice(index, 1);
+        let touristsFiltered = tourists.filter(function(element) {
+            let isExist = false;
+            touristsAdded.forEach(function(elementInner, indexInned) {
+                if (elementInner.id == element.id) {
+                    isExist = true;
                 }
-            });
+            })
+            return !isExist;
         });
 
+        console.log("touristsFiltered: ", touristsFiltered);
+        console.log("touristsAdded: ", touristsAdded);
+        console.log("touristsAll: ", tourists);
+
         this.setState({
-            tourists: tourists,
+            touristsAll: touristsFiltered,
         });
     }
 
@@ -187,30 +185,30 @@ export default class ShipEdit extends React.Component {
     handleAddTourist(index) {
         console.log("Add tourist -->");
 
-        let tourists = Object.assign([], this.state.tourists);
-        let tourist = tourists.splice(index, 1);
+        let touristsAll = Object.assign([], this.state.touristsAll);
+        let touristToAdd = touristsAll.splice(index, 1);
 
-        let addedTourists = Object.assign([], this.state.addedTourists);
-        addedTourists.push(tourist[0]);
+        let touristsAdded = Object.assign([], this.state.touristsAdded);
+        touristsAdded.push(touristToAdd[0]);
 
         this.setState({
-            tourists: tourists,
-            addedTourists: addedTourists
+            touristsAdded: touristsAdded,
+            touristsAll: touristsAll
         });
     }
 
     handleRemoveTourist(index) {
         console.log("Remove tourist -->")
 
-        let addedTourists = Object.assign([], this.state.addedTourists);
-        let tourist = addedTourists.splice(index, 1);
+        let touristsAdded = Object.assign([], this.state.touristsAdded);
+        let touristToAdd = touristsAdded.splice(index, 1);
 
-        let tourists = Object.assign([], this.state.tourists);
-        tourists.push(tourist[0]);
+        let touristsAll = Object.assign([], this.state.touristsAll);
+        touristsAll.push(touristToAdd[0]);
 
         this.setState({
-            tourists: tourists,
-            addedTourists: addedTourists
+            touristsAdded: touristsAdded,
+            touristsAll: touristsAll
         });
     }
 }
