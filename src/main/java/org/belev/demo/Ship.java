@@ -19,6 +19,7 @@ public class Ship implements Serializable {
     private String departureDate;
     private String arrivalDate;
     @Transient
+    @JsonIgnoreProperties("ship")
     private List<Tourist> touristsAdded = new ArrayList<Tourist>();
 
     // @JsonManagedReference

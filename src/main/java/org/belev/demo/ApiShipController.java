@@ -82,22 +82,6 @@ public class ApiShipController {
             updatedShip.addTourist(addedTourists.get(i));
         }
 
-        // updatedShip.setId(id);
-
-        // System.out.println("Tourist to remove -------------------------->");
-        // for (Tourist t : touristsToRemove) {
-            // System.out.println(t.getFirstName());
-        // }
-        // updatedShip.setId(id);
-        // List<Tourist> touristNotFull = updatedShip.getTouristsAdded();
-        // System.out.println("-------------------------->");
-        // System.out.println(touristNotFull.size());
-        // for (int i = 0; i < touristNotFull.size(); i++) {
-            // Long touristId = touristNotFull.get(i).getId();
-            // Tourist tourist = touristRepository.findById(touristId).get();
-            // updatedShip.addTourist(tourist);
-        // }
-
         shipRepository.save(updatedShip);
 
         return "Ship updated";
