@@ -1,5 +1,6 @@
 package org.belev.demo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -20,8 +21,9 @@ public class Ship implements Serializable {
     @Transient
     private List<Tourist> touristsAdded = new ArrayList<Tourist>();
 
+    // @JsonManagedReference
     @OneToMany(mappedBy="ship", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnoreProperties("ship")
     private List<Tourist> tourists = new ArrayList<Tourist>();
 
     private Ship() {}
@@ -42,7 +44,7 @@ public class Ship implements Serializable {
 
     public void removeTourist(Tourist tourist) {
         tourist.setShip(null);
-        this.tourists.remove(tourist);
+        this.tourists.add(tourist);
     }
 
     public Long getId() {

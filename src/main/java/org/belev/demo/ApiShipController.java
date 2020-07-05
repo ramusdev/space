@@ -2,6 +2,7 @@ package org.belev.demo;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,16 +44,59 @@ public class ApiShipController {
     // Update ship
     @PutMapping(value = "/update/{id}")
     public String update(@RequestBody Ship updatedShip, @PathVariable Long id) {
-        updatedShip.setId(id);
-        List<Tourist> touristNotFull = updatedShip.getTouristsAdded();
-        System.out.println("-------------------------->");
-        System.out.println(touristNotFull.size());
 
-        for (int i = 0; i < touristNotFull.size(); i++) {
-            Long touristId = touristNotFull.get(i).getId();
+        Ship currentShip = shipRepository.findById(id).get();
+        List<Tourist> currentTourists = currentShip.getTourists();
+
+        // List<Tourist> touristsNotFull = updatedShip.getTouristsAdded();
+        List<Tourist> addedTourists = updatedShip.getTouristsAdded();
+
+        /*
+        List<Tourist> addedTourists = new ArrayList<Tourist>();
+        for (int i = 0; i < touristsNotFull.size(); i++) {
+            Long touristId = touristsNotFull.get(i).getId();
             Tourist tourist = touristRepository.findById(touristId).get();
-            updatedShip.addTourist(tourist);
+            addedTourists.add(tourist);
         }
+        */
+
+        // Filter
+        List<Tourist> touristsToRemove = new ArrayList<Tourist>();
+        for (int i = 0; i < currentTourists.size(); i++) {
+            boolean isExist = false;
+            for (int k = 0; k < addedTourists.size(); k++) {
+                if (currentTourists.get(i).getId() == addedTourists.get(k).getId()) {
+                    isExist = true;
+                }
+            }
+            if (! isExist) {
+                touristsToRemove.add(currentTourists.get(i));
+            }
+        }
+
+        for (int i = 0; i < touristsToRemove.size(); i++) {
+            updatedShip.removeTourist(touristsToRemove.get(i));
+        }
+
+        for (int i = 0; i < addedTourists.size(); i++) {
+            updatedShip.addTourist(addedTourists.get(i));
+        }
+
+        // updatedShip.setId(id);
+
+        // System.out.println("Tourist to remove -------------------------->");
+        // for (Tourist t : touristsToRemove) {
+            // System.out.println(t.getFirstName());
+        // }
+        // updatedShip.setId(id);
+        // List<Tourist> touristNotFull = updatedShip.getTouristsAdded();
+        // System.out.println("-------------------------->");
+        // System.out.println(touristNotFull.size());
+        // for (int i = 0; i < touristNotFull.size(); i++) {
+            // Long touristId = touristNotFull.get(i).getId();
+            // Tourist tourist = touristRepository.findById(touristId).get();
+            // updatedShip.addTourist(tourist);
+        // }
 
         shipRepository.save(updatedShip);
 

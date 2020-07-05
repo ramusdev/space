@@ -1,6 +1,7 @@
 package org.belev.demo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,9 +21,10 @@ public class Tourist implements Serializable {
     @Transient
     private Long shipIdentifier;
     // cascade = CascadeType.ALL
-    @ManyToOne(fetch = FetchType.EAGER)
+    // @JsonBackReference
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "ship_id")
-    @JsonBackReference
+    @JsonIgnoreProperties("tourists")
     private Ship ship = null;
 
     private Tourist() {}
