@@ -1,4 +1,5 @@
 import React from 'react'
+import Notification from "../Components/Notification.js";
 
 export default class ShipAdd extends React.Component {
 
@@ -9,15 +10,19 @@ export default class ShipAdd extends React.Component {
             direction: '',
             price: '',
             seats: '',
+            seatsAvailable: '',
             departureDate: '',
             arrivalDate: '',
             touristsAll: [],
-            touristsAdded: []
+            touristsAdded: [],
+            notificationText: '',
+            notificationVisible: 'alert alert-danger is-notvisible'
         };
 
         this.fetchData = this.fetchData.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleChangeSeats = this.handleChangeSeats.bind(this);
     }
 
     render() {
@@ -41,7 +46,10 @@ export default class ShipAdd extends React.Component {
                                 </div>
                                 <div className="form-group">
                                     <input type="text" className="form-control" name="seats" placeholder="Seats"
-                                           onChange={this.handleChange} value={this.state.seats}></input>
+                                           onChange={this.handleChangeSeats} value={this.state.seats}></input>
+                                </div>
+                                <div className="form-group">
+                                    <div className="text-secondary">Available seats: {this.state.seatsAvailable}</div>
                                 </div>
                                 <div className="form-group">
                                     <input type="text" className="form-control" name="departureDate" placeholder="Departure date"
@@ -78,6 +86,7 @@ export default class ShipAdd extends React.Component {
                         </div>
                     </div>
                 </form>
+                <Notification text={this.state.notificationText} visible={this.state.notificationVisible}></Notification>
             </div>
 
         )
@@ -110,6 +119,17 @@ export default class ShipAdd extends React.Component {
         });
     }
 
+    handleChangeSeats(event) {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+        this.setState( {
+            [name]: value,
+            seatsAvailable: value
+        });
+    }
+
     handleSubmit(event) {
         console.log("Form submited -->");
 
@@ -137,9 +157,30 @@ export default class ShipAdd extends React.Component {
         let touristsAdded = Object.assign([], this.state.touristsAdded);
         touristsAdded.push(touristToAdd[0]);
 
+        // Seats available check
+        const seatsAvailable = this.state.seatsAvailable;
+        const newSeatsAvailable = seatsAvailable - 1;
+
+        if (newSeatsAvailable < 0) {
+            this.setState({
+                notificationText: 'Error! Not enought available seats!',
+                notificationVisible: 'alert alert-danger is-visible'
+            });
+
+            setTimeout(() => {
+                this.setState({
+                    notificationText: 'Error! Not enought available seats!',
+                    notificationVisible: 'alert alert-danger is-notvisible'
+                });
+            }, 5000);
+
+            return false;
+        }
+
         this.setState({
             touristsAdded: touristsAdded,
-            touristsAll: touristsAll
+            touristsAll: touristsAll,
+            seatsAvailable: newSeatsAvailable
         });
     }
 
@@ -152,9 +193,13 @@ export default class ShipAdd extends React.Component {
         let touristsAll = Object.assign([], this.state.touristsAll);
         touristsAll.push(touristToAdd[0]);
 
+        const seatsAvailable = this.state.seatsAvailable;
+        const newSeatsAvailable = seatsAvailable + 1;
+
         this.setState({
             touristsAdded: touristsAdded,
-            touristsAll: touristsAll
+            touristsAll: touristsAll,
+            seatsAvailable: newSeatsAvailable
         });
     }
 }

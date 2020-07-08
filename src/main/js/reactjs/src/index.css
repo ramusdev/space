@@ -66,3 +66,24 @@ button {
     -webkit-overflow-scrolling: touch;
 }
 
+.is-visible {
+    position: absolute;
+    z-index: 101;
+    bottom: 0;
+    right: 0;
+
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.5s linear;
+}
+.is-notvisible {
+    position: absolute;
+    z-index: 101;
+    bottom: 0;
+    right: 0;
+
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 0.5s, opacity 0.5s linear;
+}
+

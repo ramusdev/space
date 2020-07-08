@@ -30,6 +30,16 @@ public class ApiShipController {
     @PostMapping(value = "/add")
     public String add(@RequestBody Ship ship) {
         List<Tourist> touristNotFull = ship.getTouristsAdded();
+
+        // Init available seats
+        ship.setAvailableSeats(ship.getSeats());
+
+        // New available seats
+        int newSeats = ship.getAvailableSeats() - touristNotFull.size();
+        ship.setAvailableSeats(newSeats);
+
+        // Set tourists
+        // List<Tourist> touristNotFull = ship.getTouristsAdded();
         for (int i = 0; i < touristNotFull.size(); i++) {
             Long touristId = touristNotFull.get(i).getId();
             Tourist tourist = touristRepository.findById(touristId).get();

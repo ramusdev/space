@@ -16,6 +16,7 @@ public class Ship implements Serializable {
     private String direction;
     private int price;
     private int seats;
+    private int availableSeats;
     private String departureDate;
     private String arrivalDate;
     @Transient
@@ -64,6 +65,10 @@ public class Ship implements Serializable {
         return seats;
     }
 
+    public int getAvailableSeats() {
+        return this.availableSeats;
+    }
+
     public List<Tourist> getTourists() {
         return this.tourists;
     }
@@ -94,6 +99,10 @@ public class Ship implements Serializable {
 
     public void setSeats(int seats) {
         this.seats = seats;
+    }
+
+    public void setAvailableSeats(int availableSeats) {
+        this.availableSeats = availableSeats;
     }
 
     public void setDepartureDate(String departureDate) {
