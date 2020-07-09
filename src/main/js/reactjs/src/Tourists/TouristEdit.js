@@ -1,4 +1,5 @@
 import React from 'react'
+import Notification from "../Components/Notification/Notification";
 
 export default class TouristEdit extends React.Component {
 
@@ -6,6 +7,7 @@ export default class TouristEdit extends React.Component {
         super(props);
 
         this.state = {
+            id: '',
             firstName: '',
             lastName: '',
             gender: '',
@@ -18,6 +20,7 @@ export default class TouristEdit extends React.Component {
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleChangeSelect = this.handleChangeSelect.bind(this);
     }
 
     render() {
@@ -31,7 +34,7 @@ export default class TouristEdit extends React.Component {
             description,
             shipIdentifier
         } = this.state;
-        console.log(this.state)
+        // console.log(this.state)
 
         return (
             <div className="tourist-container">
@@ -62,11 +65,11 @@ export default class TouristEdit extends React.Component {
                                 </div>
                                 <div className="form-group">
                                     <label form="ship">Select the ship</label>
-                                    <select className="form-control" id="ship" name="shipIdentifier" onChange={this.handleChange}>
-                                        <option value="0">None</option>
+                                    <select className="form-control" id="ship" name="shipIdentifier" onChange={this.handleChangeSelect}>
+                                        <option value="null">None</option>
                                         {ships.map(ship => {
                                             let sel = shipIdentifier === ship.id ? "selected" : "";
-                                            return <option selected={sel} key={ship.id} value={ship.id}>{ship.direction} - {ship.departureDate}</option>
+                                            return <option selected={sel} key={ship.id} value={ship.id}>{ship.direction} (Available seats: {ship.seatsAvailable})</option>
                                         })}
                                     </select>
                                 </div>
@@ -80,6 +83,7 @@ export default class TouristEdit extends React.Component {
                         </div>
                     </div>
                 </form>
+                <Notification text={this.state.notificationText} visible={this.state.notificationVisible}></Notification>
             </div>
         )
     }
@@ -97,6 +101,7 @@ export default class TouristEdit extends React.Component {
             .then(result => {
                 let ship = result.ship ? result.ship.id : 0
                 this.setState({
+                    id: result.id,
                     firstName: result.firstName,
                     lastName: result.lastName,
                     gender: result.gender,
@@ -129,11 +134,41 @@ export default class TouristEdit extends React.Component {
         });
     }
 
+    handleChangeSelect(event) {
+        console.log("This is handle change! ----------------->");
+
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+        // console.log(value);
+        // let seatsAvailable;
+        let seatsAvailable;
+        if (value != "null") {
+            const selectedShip = this.state.ships.filter(function(ship) {
+                return ship.id == value;
+            });
+            seatsAvailable = selectedShip[0].seatsAvailable
+        }
+
+        if (value != "null" && seatsAvailable < 1) {
+            console.log("-------------->")
+            this.setState({
+                notificationText: 'Error! Not enough available seats!',
+                notificationVisible: 1
+            });
+        }
+
+        this.setState({
+            [name]: value,
+        });
+    }
+
     handleSubmit(event) {
         console.log("Form submited -->");
         event.preventDefault();
         const id =  this.props.match.params.id;
-        console.log(JSON.stringify(this.state));
+        // console.log(JSON.stringify(this.state));
 
         const url = "http://127.0.0.1:8080/api/tourist/update/" + id;
         fetch(url, {
@@ -144,7 +179,21 @@ export default class TouristEdit extends React.Component {
             method: "PUT",
             dataType: 'json',
             body: JSON.stringify(this.state)
-        });
+        })
+            .then(response => response.json())
+            .then(resJson => {
+                if (resJson.success == 1) {
+                    this.setState({
+                        notificationText: 'Success! Tourist edit!',
+                        notificationVisible: 1
+                    });
+                } else {
+                    this.setState({
+                        notificationText: 'Error! Not enough available seats!',
+                        notificationVisible: 1
+                    });
+                }
+            });
 
     }
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import Notification from "../Components/Notification.js";
+import Notification from "../Components/Notification/Notification.js";
 
 export default class ShipAdd extends React.Component {
 
@@ -66,7 +66,7 @@ export default class ShipAdd extends React.Component {
                                 <ul className="list-group">
                                     {touristsAdded.map((tourist, index) => (
                                         <li key={tourist.id} className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">{tourist.firstName + ' ' + tourist.lastName}<button
-                                            onClick={this.handleRemoveTourist.bind(this, index)} className="btn btn-outline-danger btn-sm">Remove</button></li>
+                                            type="button" onClick={this.handleRemoveTourist.bind(this, index)} className="btn btn-outline-danger btn-sm">Remove</button></li>
                                     ))}
                                 </ul>
                             </div>
@@ -74,7 +74,7 @@ export default class ShipAdd extends React.Component {
                                 <ul className="list-group">
                                     {touristsAll.map((tourist, index) => (
                                         <li key={tourist.id} className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">{tourist.firstName + ' ' + tourist.lastName}<button
-                                            onClick={this.handleAddTourist.bind(this, index)} className="btn btn-outline-primary btn-sm">Add</button></li>
+                                            type="button" onClick={this.handleAddTourist.bind(this, index)} className="btn btn-outline-primary btn-sm">Add</button></li>
                                     ))}
                                 </ul>
                             </div>
@@ -88,7 +88,6 @@ export default class ShipAdd extends React.Component {
                 </form>
                 <Notification text={this.state.notificationText} visible={this.state.notificationVisible}></Notification>
             </div>
-
         )
     }
 
@@ -124,6 +123,24 @@ export default class ShipAdd extends React.Component {
         const value = target.value;
         const name = target.name;
 
+        // Seats available check
+        const seatsAvailable = this.state.seatsAvailable;
+        const newSeatsAvailable = seatsAvailable - 1;
+
+        if (newSeatsAvailable < 0) {
+            this.setState({
+                notificationText: 'Error! Not enough available seats!',
+                notificationVisible: 'alert alert-danger is-visible'
+            });
+
+            setTimeout(() => {
+                this.setState({
+                    notificationText: 'Error! Not enough available seats!',
+                    notificationVisible: 'alert alert-danger is-notvisible'
+                });
+            }, 5000);
+        }
+
         this.setState( {
             [name]: value,
             seatsAvailable: value
@@ -132,7 +149,6 @@ export default class ShipAdd extends React.Component {
 
     handleSubmit(event) {
         console.log("Form submited -->");
-
         event.preventDefault();
         console.log(JSON.stringify(this.state));
 
@@ -163,13 +179,13 @@ export default class ShipAdd extends React.Component {
 
         if (newSeatsAvailable < 0) {
             this.setState({
-                notificationText: 'Error! Not enought available seats!',
+                notificationText: 'Error! Not enough available seats!',
                 notificationVisible: 'alert alert-danger is-visible'
             });
 
             setTimeout(() => {
                 this.setState({
-                    notificationText: 'Error! Not enought available seats!',
+                    notificationText: 'Error! Not enough available seats!',
                     notificationVisible: 'alert alert-danger is-notvisible'
                 });
             }, 5000);

@@ -2,6 +2,7 @@ package org.belev.demo;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.Optional;
 
 @RestController
@@ -80,13 +81,19 @@ public class ApiTouristController {
         return "Tourist added";
     }
 
-    // Update tourist
+    // Edit tourist
     @PutMapping(value = "/update/{id}")
     public String update(@PathVariable Long id, @RequestBody Tourist updatedTourist) {
-        updatedTourist.setId(id);
+        // updatedTourist.setId(id);
         long shipId = updatedTourist.getShipIdentifier();
+
         if (shipId != 0) {
             Ship ship = shipRepository.findById(shipId).get();
+            int shipSeatsAvailable = ship.getSeatsAvailable();
+            if (shipSeatsAvailable < 1) {
+                return "{\"success\":0, \"message\":\"Error! Not enough seats!\"}";
+            }
+
             updatedTourist.setShip(ship);
         } else {
             updatedTourist.setShip(null);
@@ -94,7 +101,7 @@ public class ApiTouristController {
 
         touristRepository.save(updatedTourist);
 
-        return "Updated";
+        return "{\"success\":1, \"message\":\"Success! Tourist edited!\"}";
     }
 }
 

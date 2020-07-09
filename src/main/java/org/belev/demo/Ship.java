@@ -1,7 +1,6 @@
 package org.belev.demo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,7 +15,7 @@ public class Ship implements Serializable {
     private String direction;
     private int price;
     private int seats;
-    private int availableSeats;
+    private int seatsAvailable;
     private String departureDate;
     private String arrivalDate;
     @Transient
@@ -65,8 +64,8 @@ public class Ship implements Serializable {
         return seats;
     }
 
-    public int getAvailableSeats() {
-        return this.availableSeats;
+    public int getSeatsAvailable() {
+        return this.seatsAvailable;
     }
 
     public List<Tourist> getTourists() {
@@ -101,8 +100,8 @@ public class Ship implements Serializable {
         this.seats = seats;
     }
 
-    public void setAvailableSeats(int availableSeats) {
-        this.availableSeats = availableSeats;
+    public void setSeatsAvailable(int seatsAvailable) {
+        this.seatsAvailable = seatsAvailable;
     }
 
     public void setDepartureDate(String departureDate) {

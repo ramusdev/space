@@ -32,11 +32,11 @@ public class ApiShipController {
         List<Tourist> touristNotFull = ship.getTouristsAdded();
 
         // Init available seats
-        ship.setAvailableSeats(ship.getSeats());
+        ship.setSeatsAvailable(ship.getSeats());
 
         // New available seats
-        int newSeats = ship.getAvailableSeats() - touristNotFull.size();
-        ship.setAvailableSeats(newSeats);
+        int newSeats = ship.getSeatsAvailable() - touristNotFull.size();
+        ship.setSeatsAvailable(newSeats);
 
         // Set tourists
         // List<Tourist> touristNotFull = ship.getTouristsAdded();
