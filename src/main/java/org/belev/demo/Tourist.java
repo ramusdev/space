@@ -22,7 +22,7 @@ public class Tourist implements Serializable {
     private Long shipIdentifier;
     // cascade = CascadeType.ALL
     // @JsonBackReference
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ship_id")
     @JsonIgnoreProperties("tourists")
     private Ship ship = null;
@@ -137,6 +137,7 @@ public class Tourist implements Serializable {
         this.shipIdentifier = shipId;
     }
 
+    /*
     @Override
     public String toString() {
         return "Employee{" +
@@ -147,6 +148,5 @@ public class Tourist implements Serializable {
                 ", ship = " + ship + " " +
                 '}';
     }
-
-
+    */
 }

@@ -85,18 +85,23 @@ public class ApiTouristController {
     @PutMapping(value = "/update/{id}")
     public String update(@PathVariable Long id, @RequestBody Tourist updatedTourist) {
         // updatedTourist.setId(id);
-        long shipId = updatedTourist.getShipIdentifier();
 
+        Tourist oldTourist = touristRepository.findById(updatedTourist.getId()).get();
+        Ship oldShip = oldTourist.getShip();
+
+        long shipId = updatedTourist.getShipIdentifier();
         if (shipId != 0) {
             Ship ship = shipRepository.findById(shipId).get();
             int shipSeatsAvailable = ship.getSeatsAvailable();
-            if (shipSeatsAvailable < 1) {
+            // boolean t = ship.equals(oldShip);
+
+            if (shipSeatsAvailable < 1 && !ship.equals(oldShip)) {
                 return "{\"success\":0, \"message\":\"Error! Not enough seats!\"}";
             }
-
             updatedTourist.setShip(ship);
         } else {
-            updatedTourist.setShip(null);
+            // updatedTourist.setShip(null);
+            updatedTourist.removeShip(ship);
         }
 
         touristRepository.save(updatedTourist);

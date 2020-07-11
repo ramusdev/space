@@ -4,52 +4,41 @@ import './Notification.css';
 
 export default class Notification extends React.Component {
     constructor(props) {
-        super(props)
-
-        // const {text, visible} = props;
+        super(props);
 
         this.state = {
-            notificationText: this.props.text,
-            notificationVisible: this.props.visible
+            notificationClass: "alert alert-success is-notvisible",
+            notificationText: ""
         };
 
-        console.log(props);
-
-        // let classNotificationNotVisible = 'alert alert-danger is-notvisible';
-        // this.state = {
-            // classNotification: classNotificationNotVisible
-        // }
-        /*
-        setTimeout(() => {
-            this.setState({
-                notificationText: 'Error! Not enough available seats!',
-                notificationVisible: 0
-            });
-        }, 2000);
-        */
+        this.showMessage = this.showMessage.bind(this);
     }
     render() {
-        // const {text, visible} = this.props;
-        // console.log(this.state);
-
-        const mod = this.state.notificationVisible ? "is-visible" : "is-notvisible";
-        const notificationClass = "alert alert-danger " + mod;
-
         return(
-            <div className={notificationClass} role="alert">
+            <div className={this.state.notificationClass} role="alert">
                 {this.state.notificationText}
             </div>
         )
     }
 
-    /*
-    componentDidMount() {
+    showMessage(message, type) {
+
+        let notificationVisibleClass = type ? "alert alert-success is-visible" : "alert alert-danger is-visible";
+        let notificationNotVisibleClass = type ? "alert alert-error is-notvisible" : "alert alert-danger is-notvisible";
+
+        this.setState({
+            notificationClass: notificationVisibleClass,
+            notificationText: message,
+        })
+
         setTimeout(() => {
             this.setState({
-                notificationText: 'Error! Not enough available seats!',
-                notificationVisible: 0
-            });
-        }, 5000);
+                notificationClass: notificationNotVisibleClass
+            })
+        }, 4000);
     }
-    */
+
+    componentDidMount() {
+        console.log("Did mount -------->");
+    }
 }

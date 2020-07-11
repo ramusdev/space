@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Notification from "../Components/Notification/Notification";
 
 export default class ShipList extends React.Component {
 
@@ -9,6 +10,8 @@ export default class ShipList extends React.Component {
         this.state = {
             items: []
         };
+
+        this.notificationComponent = React.createRef();
     }
 
     render() {
@@ -59,6 +62,7 @@ export default class ShipList extends React.Component {
                         </div>
                     </div>
                 </div>
+                <Notification ref={this.notificationComponent} text={this.state.notificationText} visible={this.state.notificationVisible}></Notification>
             </div>
         )
     }
@@ -90,13 +94,16 @@ export default class ShipList extends React.Component {
         fetch(urlRequest, {
             method: 'DELETE',
         })
-            .then(res => res.text())
-            .then(res => console.log(res))
+            .then(res => res.json())
             .then(res => {
                     let itemsUpdated = Object.assign([], this.state.items);
                     itemsUpdated.splice(index, 1);
 
-                    this.setState({items: itemsUpdated});
+                    this.setState({
+                        items: itemsUpdated
+                    });
+
+                    this.notificationComponent.current.showMessage("Success! Item was delete", 1);
                 }
             )
     }

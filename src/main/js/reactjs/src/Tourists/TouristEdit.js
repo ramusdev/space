@@ -15,8 +15,14 @@ export default class TouristEdit extends React.Component {
             dateOfBirth: '',
             shipIdentifier: '',
             ships: [],
-            description: ''
+            description: '',
+            notificationText: '',
+            notificationVisible: ''
         };
+
+        // console.log("Text in constructor tourist");
+
+        this.notificationComponent = React.createRef();
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -83,7 +89,7 @@ export default class TouristEdit extends React.Component {
                         </div>
                     </div>
                 </form>
-                <Notification text={this.state.notificationText} visible={this.state.notificationVisible}></Notification>
+                <Notification ref={this.notificationComponent} text={this.state.notificationText} visible={this.state.notificationVisible}></Notification>
             </div>
         )
     }
@@ -141,8 +147,6 @@ export default class TouristEdit extends React.Component {
         const value = target.value;
         const name = target.name;
 
-        // console.log(value);
-        // let seatsAvailable;
         let seatsAvailable;
         if (value != "null") {
             const selectedShip = this.state.ships.filter(function(ship) {
@@ -152,11 +156,7 @@ export default class TouristEdit extends React.Component {
         }
 
         if (value != "null" && seatsAvailable < 1) {
-            console.log("-------------->")
-            this.setState({
-                notificationText: 'Error! Not enough available seats!',
-                notificationVisible: 1
-            });
+            this.notificationComponent.current.showMessage("Error! Not enough seats", 0);
         }
 
         this.setState({
@@ -168,7 +168,6 @@ export default class TouristEdit extends React.Component {
         console.log("Form submited -->");
         event.preventDefault();
         const id =  this.props.match.params.id;
-        // console.log(JSON.stringify(this.state));
 
         const url = "http://127.0.0.1:8080/api/tourist/update/" + id;
         fetch(url, {
@@ -182,17 +181,11 @@ export default class TouristEdit extends React.Component {
         })
             .then(response => response.json())
             .then(resJson => {
-                if (resJson.success == 1) {
-                    this.setState({
-                        notificationText: 'Success! Tourist edit!',
-                        notificationVisible: 1
-                    });
-                } else {
-                    this.setState({
-                        notificationText: 'Error! Not enough available seats!',
-                        notificationVisible: 1
-                    });
-                }
+                // if (resJson.success == 1) {
+                    this.notificationComponent.current.showMessage(resJson.message, resJson.success);
+                // } else {
+                    // this.notificationComponent.current.showMessage(resJson.message, resJson.success);
+                // }
             });
 
     }

@@ -116,6 +116,7 @@ public class Ship implements Serializable {
         this.touristsAdded = touristsAdded;
     }
 
+    /*
     public String toString() {
         return "Ship: " +
                 "\nid: " + id +
@@ -126,4 +127,5 @@ public class Ship implements Serializable {
                 "\narrivalDate: " + arrivalDate +
                 "\ntourists: " + tourists;
     }
+    */
 }

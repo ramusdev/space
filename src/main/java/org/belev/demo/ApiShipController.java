@@ -48,7 +48,7 @@ public class ApiShipController {
 
         shipRepository.save(ship);
 
-        return "Added new ship";
+        return "{\"success\":1, \"message\":\"Success! Ship was add!\"}";
     }
 
     // Update ship
@@ -94,7 +94,7 @@ public class ApiShipController {
 
         shipRepository.save(updatedShip);
 
-        return "Ship updated";
+        return "{\"success\":1, \"message\":\"Success! Ship updated!\"}";
     }
 
     // Get all ships
@@ -108,6 +108,6 @@ public class ApiShipController {
     public String delete(@PathVariable Long id) {
         shipRepository.deleteById(id);
 
-        return "Ship deleted";
+        return "{\"success\":1, \"message\":\"Success! Ship deleted!\"}";
     }
 }

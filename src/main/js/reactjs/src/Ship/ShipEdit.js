@@ -25,6 +25,8 @@ export default class ShipEdit extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeSeats = this.handleChangeSeats.bind(this);
+
+        this.notificationComponent = React.createRef();
     }
 
     render() {
@@ -97,7 +99,7 @@ export default class ShipEdit extends React.Component {
                         </div>
                     </div>
                 </form>
-                <Notification text={this.state.notificationText} visible={this.state.notificationVisible}></Notification>
+                <Notification ref={this.notificationComponent} text={this.state.notificationText} visible={this.state.notificationVisible}></Notification>
             </div>
         )
     }
@@ -199,7 +201,11 @@ export default class ShipEdit extends React.Component {
             method: "PUT",
             dataType: 'json',
             body: JSON.stringify(this.state)
-        });
+        })
+            .then(res => res.json())
+            .then(res => {
+                this.notificationComponent.current.showMessage(res.message, res.success);
+            });
     }
 
     handleAddTourist(index) {
@@ -216,18 +222,7 @@ export default class ShipEdit extends React.Component {
         const newSeatsAvailable = seatsAvailable - 1;
 
         if (newSeatsAvailable < 0) {
-            this.setState({
-                notificationText: 'Error! Not enough available seats!',
-                notificationVisible: 'alert alert-danger is-visible'
-            });
-
-            setTimeout(() => {
-                this.setState({
-                    notificationText: 'Error! Not enough available seats!',
-                    notificationVisible: 'alert alert-danger is-notvisible'
-                });
-            }, 5000);
-
+            this.notificationComponent.current.showMessage("Error! Not enough seats!", 0);
             return false;
         }
 
