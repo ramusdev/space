@@ -20,8 +20,6 @@ export default class TouristEdit extends React.Component {
             notificationVisible: ''
         };
 
-        // console.log("Text in constructor tourist");
-
         this.notificationComponent = React.createRef();
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -179,13 +177,10 @@ export default class TouristEdit extends React.Component {
             dataType: 'json',
             body: JSON.stringify(this.state)
         })
-            .then(response => response.json())
-            .then(resJson => {
-                // if (resJson.success == 1) {
-                    this.notificationComponent.current.showMessage(resJson.message, resJson.success);
-                // } else {
-                    // this.notificationComponent.current.showMessage(resJson.message, resJson.success);
-                // }
+            .then(res => res.json())
+            .then(res => {
+                this.fetchShips();
+                this.notificationComponent.current.showMessage(res.message, res.success);
             });
 
     }

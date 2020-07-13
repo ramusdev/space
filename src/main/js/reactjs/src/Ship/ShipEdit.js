@@ -188,9 +188,6 @@ export default class ShipEdit extends React.Component {
         console.log("Form submited -->");
         event.preventDefault();
         const id = this.props.match.params.id;
-        //const {item} = this.state;
-        //const item = this.state;
-        //console.log(JSON.stringify(this.state));
 
         const url = "http://127.0.0.1:8080/api/ship/update/" + id;
         fetch(url, {

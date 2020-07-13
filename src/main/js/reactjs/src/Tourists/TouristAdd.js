@@ -1,4 +1,5 @@
 import React from 'react'
+import Notification from "../Components/Notification/Notification";
 
 export default class TouristAdd extends React.Component {
 
@@ -15,6 +16,8 @@ export default class TouristAdd extends React.Component {
             ships: [],
             description: ''
         };
+
+        this.notificationComponent = React.createRef();
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -62,10 +65,11 @@ export default class TouristAdd extends React.Component {
                                 <div className="form-group">
                                     <label form="ship">Select the ship</label>
                                     <select className="form-control" id="ship" name="shipIdentifier" onChange={this.handleChange}>
-                                        <option value="None">None</option>
-                                        {ships.map(ship => (
-                                            <option key={ship.id} value={ship.id}>{ship.direction} - {ship.departureDate}</option>
-                                        ))}
+                                        <option value="null">None</option>
+                                        {ships.map(ship => {
+                                            let sel = shipIdentifier === ship.id ? "selected" : "";
+                                            return <option selected={sel} key={ship.id} value={ship.id}>{ship.direction} (Available seats: {ship.seatsAvailable})</option>
+                                        })}
                                     </select>
                                 </div>
                                 <div className="form-group">
@@ -78,6 +82,7 @@ export default class TouristAdd extends React.Component {
                         </div>
                     </div>
                 </form>
+                <Notification ref={this.notificationComponent} text={this.state.notificationText} visible={this.state.notificationVisible}></Notification>
             </div>
         )
     }
@@ -85,10 +90,10 @@ export default class TouristAdd extends React.Component {
     componentDidMount() {
         console.log("Did Mount -->");
 
-        this.fetchData();
+        this.fetchShips();
     }
 
-    fetchData() {
+    fetchShips() {
         const url = "http://127.0.0.1:8080/api/ship/all";
         fetch(url)
             .then(res => res.json())
@@ -123,6 +128,11 @@ export default class TouristAdd extends React.Component {
             method: "POST",
             dataType: 'json',
             body: JSON.stringify(this.state)
-        });
+        })
+            .then(res => res.json())
+            .then(res => {
+                this.fetchShips();
+                this.notificationComponent.current.showMessage(res.message, res.success);
+            });
     }
 }

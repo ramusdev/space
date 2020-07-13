@@ -24,30 +24,6 @@ public class ApiTouristController {
         return "Inside test controller return";
     }
 
-    @GetMapping(value = "/addcustom")
-    public String addCustom() {
-        //Ship ship = new Ship("Mars", 100, 250, "10.10.2020", "11.10.2020");
-        //shipRepository.save(ship);
-
-        Ship ship2 = shipRepository.findById(new Long(3)).get();
-
-        Tourist tourist = new Tourist(
-                "First name",
-                "Last name",
-                "Some text",
-                "Male",
-                "Ukraine",
-                "10.10.2019",
-                10,
-                ship2
-        );
-
-        touristRepository.save(tourist);
-
-        System.out.println(touristRepository.findAll());
-        return "Custom employee added";
-    }
-
     @GetMapping(value = "/{id}")
     public Optional<Tourist> getById(@PathVariable Long id) {
         return touristRepository.findById(id);
@@ -71,42 +47,86 @@ public class ApiTouristController {
         long shipId = tourist.getShipIdentifier();
         if (shipId != 0) {
             Ship ship = shipRepository.findById(shipId).get();
+            if (ship.getSeatsAvailable() < 1) {
+                return "{\"success\":0, \"message\":\"Error! Not enough seats!\"}";
+            }
             tourist.setShip(ship);
         } else {
             tourist.setShip(null);
         }
 
         touristRepository.save(tourist);
-
-        return "Tourist added";
+        return "{\"success\":1, \"message\":\"Success! Tourist added!\"}";
     }
 
     // Edit tourist
     @PutMapping(value = "/update/{id}")
     public String update(@PathVariable Long id, @RequestBody Tourist updatedTourist) {
-        // updatedTourist.setId(id);
+        // Tourist oldTourist = touristRepository.findById(updatedTourist.getId()).get();
+        // Ship oldShip = oldTourist.getShip();
 
-        Tourist oldTourist = touristRepository.findById(updatedTourist.getId()).get();
-        Ship oldShip = oldTourist.getShip();
-
-        long shipId = updatedTourist.getShipIdentifier();
-        if (shipId != 0) {
-            Ship ship = shipRepository.findById(shipId).get();
-            int shipSeatsAvailable = ship.getSeatsAvailable();
-            // boolean t = ship.equals(oldShip);
-
-            if (shipSeatsAvailable < 1 && !ship.equals(oldShip)) {
-                return "{\"success\":0, \"message\":\"Error! Not enough seats!\"}";
-            }
+        long shipUpdatedId = updatedTourist.getShipIdentifier();
+        if (shipUpdatedId != 0) {
+            Ship ship = shipRepository.findById(shipUpdatedId).get();
+            // int shipSeatsAvailable = ship.getSeatsAvailable();
+            // if (shipSeatsAvailable < 1 && !ship.equals(oldShip)) {
+                //return "{\"success\":0, \"message\":\"Error! Not enough seats!\"}";
+            // }
             updatedTourist.setShip(ship);
         } else {
-            // updatedTourist.setShip(null);
-            updatedTourist.removeShip(ship);
+            updatedTourist.setShip(null);
+        }
+
+        if (! this.updateSeats(updatedTourist)) {
+            return "{\"success\":0, \"message\":\"Error! Not enough seats!\"}";
         }
 
         touristRepository.save(updatedTourist);
-
         return "{\"success\":1, \"message\":\"Success! Tourist edited!\"}";
     }
+
+    public boolean updateSeats(Tourist touristUpdated) {
+        Tourist touristOld = touristRepository.findById(touristUpdated.getId()).get();
+        Ship shipOld = touristOld.getShip();
+        Long shipUpdatedId = touristUpdated.getShipIdentifier();
+
+        if (touristUpdated.getShip() != null) {
+            Ship ship = touristUpdated.getShip();
+            if (ship.getSeatsAvailable() < 1 && !ship.equals(shipOld)) {
+                return false;
+            }
+        }
+
+        // Free seats
+        if (shipOld != null && shipUpdatedId == 0) {
+            System.out.print("This console first ------------------>");
+            System.out.println(shipUpdatedId);
+
+            int seatsAvailable = shipOld.getSeatsAvailable();
+            shipOld.setSeatsAvailable(seatsAvailable + 1);
+            // shipRepository.save(shipOld);
+        } else if (shipOld != null && shipUpdatedId != 0) {
+            System.out.print("This console second ------------------>");
+            System.out.println(shipUpdatedId);
+
+            int seatsOldAvailable = shipOld.getSeatsAvailable();
+            shipOld.setSeatsAvailable(seatsOldAvailable + 1);
+
+            Ship shipUpdated = shipRepository.findById(shipUpdatedId).get();
+            int seatsUpdatedAvailable = shipUpdated.getSeatsAvailable();
+            shipUpdated.setSeatsAvailable(seatsUpdatedAvailable - 1);
+        } else if (shipOld == null && shipUpdatedId != 0) {
+            System.out.print("This console third ------------------>");
+            System.out.println(shipUpdatedId);
+
+            Ship shipUpdated = shipRepository.findById(shipUpdatedId).get();
+            int seatsAvailableUpdated = shipUpdated.getSeatsAvailable();
+            shipUpdated.setSeatsAvailable(seatsAvailableUpdated - 1);
+            // shipRepository.save(shipUpdated);
+        }
+
+        return true;
+    }
+
 }
 
