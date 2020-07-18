@@ -93,7 +93,8 @@ export default class TouristList extends React.Component {
         const urlRequest = "http://127.0.0.1:8080/api/tourist/" + userId;
         fetch(urlRequest, {
             method: 'DELETE',
-        }).then(res => res.text())
+        })
+            .then(res => res.json())
             .then(res => {
                     let itemsUpdated = Object.assign([], this.state.items);
                     itemsUpdated.splice(index, 1);
@@ -101,8 +102,8 @@ export default class TouristList extends React.Component {
                     this.setState({
                         items: itemsUpdated
                     });
-                    this.notificationComponent.current.showMessage("Success! Item was delete", 1);
-                }
-            )
+
+                    this.notificationComponent.current.showMessage(res.message, res.success);
+                });
     }
 }

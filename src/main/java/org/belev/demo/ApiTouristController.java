@@ -1,6 +1,7 @@
 package org.belev.demo;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -38,47 +39,55 @@ public class ApiTouristController {
     public String delete(@PathVariable Long id) {
         touristRepository.deleteById(id);
 
-        return "Item deleted";
+        return "{\"success\":1, \"message\":\"Success! Tourist deleted!\"}";
     }
 
     // Add new tourist
     @PostMapping(value = "/add")
-    public String addTourist(@RequestBody Tourist tourist) {
+    public RedirectView addTourist(@RequestBody Tourist tourist) {
         long shipId = tourist.getShipIdentifier();
         if (shipId != 0) {
             Ship ship = shipRepository.findById(shipId).get();
-            if (ship.getSeatsAvailable() < 1) {
-                return "{\"success\":0, \"message\":\"Error! Not enough seats!\"}";
+            int seats = ship.getSeatsAvailable();
+
+            if (seats < 1) {
+                // return "{\"success\":0, \"message\":\"Error! Not enough seats!\"}";
             }
+
+            ship.setSeatsAvailable(seats - 1);
             tourist.setShip(ship);
         } else {
             tourist.setShip(null);
         }
 
-        touristRepository.save(tourist);
-        return "{\"success\":1, \"message\":\"Success! Tourist added!\"}";
+        // Save
+        Tourist savedTourist = touristRepository.save(tourist);
+        Long savedTouristId = savedTourist.getId();
+        System.out.println(savedTouristId);
+
+        // Redirect
+        RedirectView redirectView = new RedirectView("/api/tourist/update/{savedTouristId}", true);
+        // redirectView.setContextRelative(true);
+        // redirectView.setUrl("/update/{savedTouristId}");
+        // return "{\"success\":1, \"message\":\"Success! Tourist added!\"}";
+        return redirectView;
     }
 
     // Edit tourist
     @PutMapping(value = "/update/{id}")
     public String update(@PathVariable Long id, @RequestBody Tourist updatedTourist) {
-        // Tourist oldTourist = touristRepository.findById(updatedTourist.getId()).get();
-        // Ship oldShip = oldTourist.getShip();
 
         long shipUpdatedId = updatedTourist.getShipIdentifier();
         if (shipUpdatedId != 0) {
             Ship ship = shipRepository.findById(shipUpdatedId).get();
-            // int shipSeatsAvailable = ship.getSeatsAvailable();
-            // if (shipSeatsAvailable < 1 && !ship.equals(oldShip)) {
-                //return "{\"success\":0, \"message\":\"Error! Not enough seats!\"}";
-            // }
+
+            if (! this.updateSeats(updatedTourist)) {
+                return "{\"success\":0, \"message\":\"Error! Not enough seats!\"}";
+            }
+
             updatedTourist.setShip(ship);
         } else {
             updatedTourist.setShip(null);
-        }
-
-        if (! this.updateSeats(updatedTourist)) {
-            return "{\"success\":0, \"message\":\"Error! Not enough seats!\"}";
         }
 
         touristRepository.save(updatedTourist);
@@ -101,32 +110,25 @@ public class ApiTouristController {
         if (shipOld != null && shipUpdatedId == 0) {
             System.out.print("This console first ------------------>");
             System.out.println(shipUpdatedId);
-
             int seatsAvailable = shipOld.getSeatsAvailable();
             shipOld.setSeatsAvailable(seatsAvailable + 1);
-            // shipRepository.save(shipOld);
         } else if (shipOld != null && shipUpdatedId != 0) {
             System.out.print("This console second ------------------>");
             System.out.println(shipUpdatedId);
-
             int seatsOldAvailable = shipOld.getSeatsAvailable();
             shipOld.setSeatsAvailable(seatsOldAvailable + 1);
-
             Ship shipUpdated = shipRepository.findById(shipUpdatedId).get();
             int seatsUpdatedAvailable = shipUpdated.getSeatsAvailable();
             shipUpdated.setSeatsAvailable(seatsUpdatedAvailable - 1);
         } else if (shipOld == null && shipUpdatedId != 0) {
             System.out.print("This console third ------------------>");
             System.out.println(shipUpdatedId);
-
             Ship shipUpdated = shipRepository.findById(shipUpdatedId).get();
             int seatsAvailableUpdated = shipUpdated.getSeatsAvailable();
             shipUpdated.setSeatsAvailable(seatsAvailableUpdated - 1);
-            // shipRepository.save(shipUpdated);
         }
 
         return true;
     }
-
 }
 
