@@ -7,7 +7,8 @@ import java.util.Collection;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = {"http://127.0.0.1:3000", "http://127.0.0.1:8080"})
+// @CrossOrigin(origins = {"http://127.0.0.1:3000", "http://127.0.0.1:8080"})
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/tourist")
 public class ApiTouristController {
     private TouristRepository touristRepository;
@@ -66,11 +67,11 @@ public class ApiTouristController {
         System.out.println(savedTouristId);
 
         // Redirect
-        RedirectView redirectView = new RedirectView("/api/tourist/update/{savedTouristId}", true);
+        // RedirectView redirectView = new RedirectView("/tourist/edit/1", true);
         // redirectView.setContextRelative(true);
         // redirectView.setUrl("/update/{savedTouristId}");
         // return "{\"success\":1, \"message\":\"Success! Tourist added!\"}";
-        return redirectView;
+        return new RedirectView("/tourist/edit/1");
     }
 
     // Edit tourist
