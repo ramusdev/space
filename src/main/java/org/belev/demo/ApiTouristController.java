@@ -1,29 +1,24 @@
 package org.belev.demo;
 
+import net.minidev.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.Collection;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @RestController
-// @CrossOrigin(origins = {"http://127.0.0.1:3000", "http://127.0.0.1:8080"})
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = {"http://127.0.0.1:3000", "http://127.0.0.1:8080"})
 @RequestMapping("/api/tourist")
 public class ApiTouristController {
     private TouristRepository touristRepository;
     private ShipRepository shipRepository;
+    // private Logger logger = LoggerFactory.getLogger(ApiTouristController.class);
 
     public ApiTouristController(ShipRepository shipRepository, TouristRepository touristRepository) {
         this.shipRepository = shipRepository;
         this.touristRepository = touristRepository;
-    }
-
-    @GetMapping(value = "/test")
-    public String test() {
-        System.out.println("Inside test controller");
-
-        return "Inside test controller return";
     }
 
     @GetMapping(value = "/{id}")
@@ -37,15 +32,21 @@ public class ApiTouristController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public String delete(@PathVariable Long id) {
+    public JSONObject delete(@PathVariable Long id) {
         touristRepository.deleteById(id);
 
-        return "{\"success\":1, \"message\":\"Success! Tourist deleted!\"}";
+        // logger.debug("This is logger debug");
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("success", "1");
+        jsonObject.put("message", "Success! Tourist deleted!");
+
+        return jsonObject;
     }
 
     // Add new tourist
     @PostMapping(value = "/add")
-    public RedirectView addTourist(@RequestBody Tourist tourist) {
+    public JSONObject addTourist(@RequestBody Tourist tourist, HttpServletResponse response) {
         long shipId = tourist.getShipIdentifier();
         if (shipId != 0) {
             Ship ship = shipRepository.findById(shipId).get();
@@ -64,26 +65,41 @@ public class ApiTouristController {
         // Save
         Tourist savedTourist = touristRepository.save(tourist);
         Long savedTouristId = savedTourist.getId();
-        System.out.println(savedTouristId);
 
+        //System.out.println(savedTouristId);
         // Redirect
         // RedirectView redirectView = new RedirectView("/tourist/edit/1", true);
         // redirectView.setContextRelative(true);
         // redirectView.setUrl("/update/{savedTouristId}");
         // return "{\"success\":1, \"message\":\"Success! Tourist added!\"}";
-        return new RedirectView("/tourist/edit/1");
+        // return new RedirectView("/tourist/edit/28");
+
+        // response.setHeader("Location", "http://127.0.0.1:3000/tourist/edit/2");
+        // response.setStatus(302);
+        // response.sendRedirect("http://127.0.0.1:3000/tourist/edit/2");
+
+        // response.setHeader("Location", "http://127.0.0.1:3000/tourist/edit/100");
+        // response.setStatus(302);
+        // return "{\"success\":1, \"message\":\"Success! Tourist edited!\"}";
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("redirect", "/tourist/edit/" + savedTouristId);
+
+        return jsonObject;
     }
 
     // Edit tourist
     @PutMapping(value = "/update/{id}")
-    public String update(@PathVariable Long id, @RequestBody Tourist updatedTourist) {
-
+    public JSONObject update(@PathVariable Long id, @RequestBody Tourist updatedTourist) {
         long shipUpdatedId = updatedTourist.getShipIdentifier();
         if (shipUpdatedId != 0) {
             Ship ship = shipRepository.findById(shipUpdatedId).get();
 
             if (! this.updateSeats(updatedTourist)) {
-                return "{\"success\":0, \"message\":\"Error! Not enough seats!\"}";
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("success", 0);
+                jsonObject.put("message", "Error! Not enough seats!");
+                return jsonObject;
             }
 
             updatedTourist.setShip(ship);
@@ -92,7 +108,12 @@ public class ApiTouristController {
         }
 
         touristRepository.save(updatedTourist);
-        return "{\"success\":1, \"message\":\"Success! Tourist edited!\"}";
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("success", 1);
+        jsonObject.put("message", "Success! Tourist edited");
+
+        return jsonObject;
     }
 
     public boolean updateSeats(Tourist touristUpdated) {

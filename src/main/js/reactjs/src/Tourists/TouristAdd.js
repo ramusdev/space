@@ -38,7 +38,7 @@ export default class TouristAdd extends React.Component {
         return (
             <div className="tourist-container">
                 <form onSubmit={this.handleSubmit}>
-                    <div className="container">
+                    <div className="container-fluid px-5">
                         <div className="row">
                             <div className="col-12">
                                 <div className="title-page">Tourists add</div>
@@ -125,14 +125,17 @@ export default class TouristAdd extends React.Component {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
+            redirect: "follow",
             method: "POST",
             dataType: 'json',
             body: JSON.stringify(this.state)
         })
             .then(res => res.json())
             .then(res => {
-                this.fetchShips();
-                this.notificationComponent.current.showMessage(res.message, res.success);
+                // console.log(res);
+                // this.fetchShips();
+                // this.notificationComponent.current.showMessage(res.message, res.success);
+                this.props.history.push(res.redirect);
             });
     }
 }

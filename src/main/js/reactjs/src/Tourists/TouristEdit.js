@@ -43,7 +43,7 @@ export default class TouristEdit extends React.Component {
         return (
             <div className="tourist-container">
                 <form onSubmit={this.handleSubmit}>
-                    <div className="container">
+                    <div className="container-fluid px-5">
                         <div className="row">
                             <div className="col-12">
                                 <div className="title-page">Tourists edit</div>
@@ -100,7 +100,8 @@ export default class TouristEdit extends React.Component {
 
     fetchData(id) {
         const url = "http://127.0.0.1:8080/api/tourist/" + id;
-        fetch(url)
+        fetch(url,{
+        })
             .then(res => res.json())
             .then(result => {
                 let ship = result.ship ? result.ship.id : 0
@@ -119,7 +120,8 @@ export default class TouristEdit extends React.Component {
 
     fetchShips() {
         const url = "http://127.0.0.1:8080/api/ship/all";
-        fetch(url)
+        fetch(url,
+        )
             .then(res => res.json())
             .then(res => {
                 this.setState({

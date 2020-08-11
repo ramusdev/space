@@ -18,7 +18,7 @@ export default class ShipSingle extends React.Component {
 
         return (
             <div className="tourist-container">
-                <div className="container">
+                <div className="container-fluid px-5">
                     <div className="row">
                         <div className="col-12">
                             <div className="title-page">Ship single</div>

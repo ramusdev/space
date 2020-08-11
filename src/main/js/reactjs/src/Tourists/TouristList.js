@@ -20,7 +20,7 @@ export default class TouristList extends React.Component {
         const { items } = this.state;
         return (
             <div className="tourist-container">
-                <div className="container">
+                <div className="container-fluid px-5">
                     <div className="row">
                         <div className="col-12">
                             <div className="title-page">Tourists list</div>

@@ -1,5 +1,5 @@
 import React from "react";
-import {BrowserRouter, Route, Switch} from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Navbar from "./Components/Navbar.js";
 import TouristList from "./Tourists/TouristList";
 import TouristAdd from "./Tourists/TouristAdd";
@@ -9,7 +9,6 @@ import ShipAdd from "./Ship/ShipAdd";
 import ShipList from "./Ship/ShipList";
 import ShipSingle from "./Ship/ShipSingle";
 import ShipEdit from "./Ship/ShipEdit";
-import Notification from "./Components/Notification/Notification.js";
 
 function App() {
 

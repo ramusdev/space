@@ -1,5 +1,6 @@
 package org.belev.demo;
 
+import net.minidev.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class ApiShipController {
 
     // Add new ship
     @PostMapping(value = "/add")
-    public String add(@RequestBody Ship ship) {
+    public JSONObject add(@RequestBody Ship ship) {
         List<Tourist> touristNotFull = ship.getTouristsAdded();
 
         // Init available seats
@@ -39,36 +40,28 @@ public class ApiShipController {
         ship.setSeatsAvailable(newSeats);
 
         // Set tourists
-        // List<Tourist> touristNotFull = ship.getTouristsAdded();
         for (int i = 0; i < touristNotFull.size(); i++) {
             Long touristId = touristNotFull.get(i).getId();
             Tourist tourist = touristRepository.findById(touristId).get();
             ship.addTourist(tourist);
         }
 
-        shipRepository.save(ship);
+        Ship shipSaved = shipRepository.save(ship);
+        Long shipSavedId = shipSaved.getId();
 
-        return "{\"success\":1, \"message\":\"Success! Ship was add!\"}";
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("redirect", "/ship/edit/" + shipSavedId);
+
+        return jsonObject;
     }
 
     // Update ship
     @PutMapping(value = "/update/{id}")
-    public String update(@RequestBody Ship updatedShip, @PathVariable Long id) {
+    public JSONObject update(@RequestBody Ship updatedShip, @PathVariable Long id) {
 
         Ship currentShip = shipRepository.findById(id).get();
         List<Tourist> currentTourists = currentShip.getTourists();
-
-        // List<Tourist> touristsNotFull = updatedShip.getTouristsAdded();
         List<Tourist> addedTourists = updatedShip.getTouristsAdded();
-
-        /*
-        List<Tourist> addedTourists = new ArrayList<Tourist>();
-        for (int i = 0; i < touristsNotFull.size(); i++) {
-            Long touristId = touristsNotFull.get(i).getId();
-            Tourist tourist = touristRepository.findById(touristId).get();
-            addedTourists.add(tourist);
-        }
-        */
 
         // Filter
         List<Tourist> touristsToRemove = new ArrayList<Tourist>();
@@ -94,7 +87,11 @@ public class ApiShipController {
 
         shipRepository.save(updatedShip);
 
-        return "{\"success\":1, \"message\":\"Success! Ship updated!\"}";
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("success", "1");
+        jsonObject.put("message", "Success! Ship updated!");
+
+        return jsonObject;
     }
 
     // Get all ships
@@ -105,9 +102,13 @@ public class ApiShipController {
 
     // Delete ship
     @DeleteMapping(value = "/{id}")
-    public String delete(@PathVariable Long id) {
+    public JSONObject delete(@PathVariable Long id) {
         shipRepository.deleteById(id);
 
-        return "{\"success\":1, \"message\":\"Success! Ship deleted!\"}";
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("success", "1");
+        jsonObject.put("message", "Success! Ship deleted!");
+
+        return jsonObject;
     }
 }

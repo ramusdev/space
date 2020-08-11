@@ -34,7 +34,7 @@ export default class ShipAdd extends React.Component {
         return (
             <div className="shipadd-container">
                 <form onSubmit={this.handleSubmit}>
-                    <div className="container">
+                    <div className="container-fluid px-5">
                         <div className="row">
                             <div className="col-12">
                                 <div className="title-page">Ship add</div>
@@ -165,7 +165,8 @@ export default class ShipAdd extends React.Component {
         })
             .then(res => res.json())
             .then(res => {
-                this.notificationComponent.current.showMessage(res.message, res.success);
+                // this.notificationComponent.current.showMessage(res.message, res.success);
+                this.props.history.push(res.redirect);
             });
     }
 

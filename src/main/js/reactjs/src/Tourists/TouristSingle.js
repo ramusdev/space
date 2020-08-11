@@ -17,7 +17,7 @@ export default class TouristSingle extends React.Component {
 
         return (
             <div className="tourist-container">
-                <div className="container">
+                <div className="container-fluid px-5">
                     <div className="row">
                         <div className="col-12">
                             <div className="title-page">Tourist single</div>

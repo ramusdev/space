@@ -45,7 +45,7 @@ export default class ShipEdit extends React.Component {
         return (
             <div className="shipadd-container">
                 <form onSubmit={this.handleSubmit}>
-                    <div className="container">
+                    <div className="container-fluid px-5">
                         <div className="row">
                             <div className="col-12">
                                 <div className="title-page">Ship edit</div>
