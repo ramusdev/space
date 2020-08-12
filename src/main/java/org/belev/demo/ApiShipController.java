@@ -87,6 +87,13 @@ public class ApiShipController {
 
         shipRepository.save(updatedShip);
 
+        /*
+        List<Tourist> updatedTourists = updatedShip.getTourists();
+        for (Tourist tourist : updatedTourists) {
+            System.out.println(tourist.getFirstName());
+        }
+        */
+
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("success", "1");
         jsonObject.put("message", "Success! Ship updated!");
@@ -94,15 +101,22 @@ public class ApiShipController {
         return jsonObject;
     }
 
-    // Get all ships
+    // Get all
     @GetMapping(value = "/all")
     public Iterable<Ship> all() {
         return shipRepository.findAll();
     }
 
-    // Delete ship
+    // Delete
     @DeleteMapping(value = "/{id}")
     public JSONObject delete(@PathVariable Long id) {
+        Ship ship = shipRepository.findById(id).get();
+        List<Tourist> tourists = ship.getTourists();
+
+        for (Tourist tourist : tourists) {
+            tourist.setShip(null);
+        }
+
         shipRepository.deleteById(id);
 
         JSONObject jsonObject = new JSONObject();

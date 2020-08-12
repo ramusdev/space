@@ -103,7 +103,7 @@ export default class ShipList extends React.Component {
                         items: itemsUpdated
                     });
 
-                    this.notificationComponent.current.showMessage("Success! Item was delete", 1);
+                    this.notificationComponent.current.showMessage(res.message, res.success);
                 }
             )
     }

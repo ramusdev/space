@@ -23,7 +23,7 @@ public class Ship implements Serializable {
     private List<Tourist> touristsAdded = new ArrayList<Tourist>();
 
     // @JsonManagedReference
-    @OneToMany(mappedBy="ship", fetch = FetchType.EAGER, orphanRemoval = false)
+    @OneToMany(mappedBy="ship", fetch = FetchType.EAGER, cascade = { CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH })
     @JsonIgnoreProperties("ship")
     private List<Tourist> tourists = new ArrayList<Tourist>();
 
