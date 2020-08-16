@@ -8,9 +8,11 @@ export default class ShipList extends React.Component {
         super(props);
 
         this.state = {
-            items: []
+            items: [],
+            searchDirection: ""
         };
 
+        this.inputChangeDirection = this.inputChangeDirection.bind(this);
         this.notificationComponent = React.createRef();
     }
 
@@ -18,12 +20,22 @@ export default class ShipList extends React.Component {
         console.log("Render -->");
 
         const { items } = this.state;
+        // console.log(items);
+
         return (
             <div className="tourist-container">
                 <div className="container-fluid px-5">
                     <div className="row">
                         <div className="col-12">
                             <div className="title-page">Tourists list</div>
+                            <div className="form-finder mb-2">
+                                <form className="form-inline">
+                                    <input onChange={this.inputChangeDirection} value={this.state.searchDirection} name="searchDirection" type="text"
+                                           className="form-control mb-2 mr-sm-2" id="inlineInputDirection" placeholder="Direction" />
+                                    <input type="text" className="form-control mb-2 mr-sm 2" id="inlineInputDate" placeholder="Departure" />
+                                    <button type="submit" className="btn btn-outline-primary mb-2">Find</button>
+                                </form>
+                            </div>
                             <table className="table">
                                 <thead className="table__head">
                                 <tr>
@@ -106,5 +118,31 @@ export default class ShipList extends React.Component {
                     this.notificationComponent.current.showMessage(res.message, res.success);
                 }
             )
+    }
+
+    inputChangeDirection(event) {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+        this.setState( {
+            [name]: value
+        });
+
+        const urlRequest = "http://127.0.0.1:8080/api/ship/search/" + value;
+
+        fetch(urlRequest)
+            .then(res => res.json())
+            .then(res => {
+                if(res.length) {
+                    this.setState({
+                        items: res
+                    });
+                }
+
+                console.log(res);
+                console.log("----------->");
+                console.log(this.state);
+            });
     }
 }

@@ -1,9 +1,11 @@
 package org.belev.demo;
 
+import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +19,28 @@ public class ApiShipController {
     public ApiShipController(ShipRepository shipRepository, TouristRepository touristRepository) {
         this.shipRepository = shipRepository;
         this.touristRepository = touristRepository;
+    }
+
+    // Find ship
+    @GetMapping(value = {"/search", "/search/{direction}"})
+    public JSONArray search(@PathVariable(required = false) String direction) {
+
+        List<Ship> ships;
+        JSONArray jsonArray = new JSONArray();
+
+        if (direction != null) {
+            ships = shipRepository.findShipsByDirection(direction);
+            for (Ship ship : ships) {
+                jsonArray.appendElement(ship);
+            }
+        } else {
+            Iterable<Ship> shipsIterable = shipRepository.findAll();
+            for (Ship ship : shipsIterable) {
+                jsonArray.appendElement(ship);
+            }
+        }
+
+        return jsonArray;
     }
 
     // Single ship

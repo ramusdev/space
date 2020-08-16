@@ -13,6 +13,7 @@ export default class Navbar extends React.Component {
                     <Link to={`/tourist/add`}>Tourist add</Link>
                     <Link to={`/ship/list`}>Ship list</Link>
                     <Link to={`/ship/add`}>Ship add</Link>
+                    <Link to={`/order`}>Order</Link>
                 </div>
             </div>
         )
