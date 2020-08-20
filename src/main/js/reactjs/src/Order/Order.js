@@ -13,7 +13,8 @@ export default class Order extends React.Component {
             departure: ""
         };
 
-        this.inputChangeDirection = this.inputChangeDirection.bind(this);
+        this.handleChangeInput = this.handleChangeInput.bind(this);
+        this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
         this.notificationComponent = React.createRef();
     }
 
@@ -28,10 +29,10 @@ export default class Order extends React.Component {
                         <div className="col-12">
                             <div className="title-page">Order</div>
                             <div className="form-finder mb-2">
-                                <form className="form-inline">
-                                    <input onChange={this.inputChangeDirection} value={this.state.direction} name="direction" type="text"
+                                <form className="form-inline" onSubmit={this.handleSubmitSearch}>
+                                    <input onChange={this.handleChangeInput} value={this.state.direction} name="direction" type="text"
                                            className="form-control mb-2 mr-sm-2" id="inlineInputDirection" placeholder="Direction" />
-                                    <input onChange={this.inputChangeDirection} value={this.state.departure} name="departure" type="text"
+                                    <input onChange={this.handleChangeInput} value={this.state.departure} name="departure" type="text"
                                            className="form-control mb-2 mr-sm-2" id="inlineInputDeparture" placeholder="Departure" />
                                     <button type="submit" className="btn btn-outline-primary mb-2">Search</button>
                                 </form>
@@ -95,7 +96,7 @@ export default class Order extends React.Component {
             })
     }
 
-    inputChangeDirection(event) {
+    handleChangeInput(event) {
         const target = event.target;
         const value = target.value;
         const name = target.name;
@@ -103,16 +104,27 @@ export default class Order extends React.Component {
         this.setState( {
             [name]: value
         });
+    }
 
-        const urlRequest = "http://127.0.0.1:8080/api/ship/search/" + value;
-        fetch(urlRequest)
+    handleSubmitSearch(event) {
+        event.preventDefault();
+        console.log("Search --->");
+
+        let url = new URL("http://127.0.0.1:8080/api/ship/search/");
+        url.searchParams.set("direction", this.state.direction);
+        url.searchParams.set("departure", this.state.departure);
+
+        console.log(url.toString());
+
+        // const urlRequest = "http://127.0.0.1:8080/api/ship/search/" + value;
+        fetch(url)
             .then(res => res.json())
             .then(res => {
-                if(res.length) {
-                    this.setState({
-                        ships: res
-                    });
-                }
+                // if(res.length) {
+                    // this.setState({
+                        //ships: res
+                    // });
+                // }
             });
     }
 }

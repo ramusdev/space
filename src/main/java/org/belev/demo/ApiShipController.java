@@ -4,6 +4,7 @@ import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,14 +23,30 @@ public class ApiShipController {
     }
 
     // Find ship
-    @GetMapping(value = {"/search", "/search/{direction}"})
-    public JSONArray search(@PathVariable(required = false) String direction) {
+    @GetMapping(value = "/search")
+    public JSONArray search(@RequestParam String direction, Timestamp departure) {
 
         List<Ship> ships;
         JSONArray jsonArray = new JSONArray();
 
+        System.out.println(direction);
+        System.out.println(departure);
+        System.out.println("------------>");
+
+        Timestamp tms = Timestamp.valueOf("2020-10-10 10:10:10");
+        System.out.println(tms);
+
+        ships = shipRepository.findShipsByDirectionAndDeparture(tms);
+
+        System.out.println(ships);
+
+        for (Ship ship : ships) {
+            System.out.println(ship.getDirection());
+        }
+
+        /*
         if (direction != null) {
-            ships = shipRepository.findShipsByDirection(direction);
+            ships = shipRepository.findShipsByDirectionAndDeparture(departure);
             for (Ship ship : ships) {
                 jsonArray.appendElement(ship);
             }
@@ -39,6 +56,7 @@ public class ApiShipController {
                 jsonArray.appendElement(ship);
             }
         }
+        */
 
         return jsonArray;
     }

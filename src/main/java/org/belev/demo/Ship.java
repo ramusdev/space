@@ -1,11 +1,13 @@
 package org.belev.demo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Timestamp;
 
 @Entity
 public class Ship implements Serializable {
@@ -16,8 +18,10 @@ public class Ship implements Serializable {
     private int price;
     private int seats;
     private int seatsAvailable;
-    private String departureDate;
-    private String arrivalDate;
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd.MM.yyyy HH:mm:ss")
+    private Timestamp departureDate;
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd.MM.yyyy HH:mm:ss")
+    private Timestamp arrivalDate;
     @Transient
     @JsonIgnoreProperties("ship")
     private List<Tourist> touristsAdded = new ArrayList<Tourist>();
@@ -29,7 +33,7 @@ public class Ship implements Serializable {
 
     private Ship() {}
 
-    public Ship(String direction, int price, int seats, String departureDate, String arrivalDate, List<Tourist> touristsAdded) {
+    public Ship(String direction, int price, int seats, Timestamp departureDate, Timestamp arrivalDate, List<Tourist> touristsAdded) {
         this.direction = direction;
         this.price = price;
         this.seats = seats;
@@ -72,11 +76,11 @@ public class Ship implements Serializable {
         return this.tourists;
     }
 
-    public String getDepartureDate() {
+    public Timestamp getDepartureDate() {
         return departureDate;
     }
 
-    public String getArrivalDate() {
+    public Timestamp getArrivalDate() {
         return arrivalDate;
     }
 
@@ -104,11 +108,11 @@ public class Ship implements Serializable {
         this.seatsAvailable = seatsAvailable;
     }
 
-    public void setDepartureDate(String departureDate) {
+    public void setDepartureDate(Timestamp departureDate) {
         this.departureDate = departureDate;
     }
 
-    public void setArrivalDate(String arrivalDate) {
+    public void setArrivalDate(Timestamp arrivalDate) {
         this.arrivalDate = arrivalDate;
     }
 

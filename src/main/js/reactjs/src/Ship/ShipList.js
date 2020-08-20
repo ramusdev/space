@@ -32,8 +32,6 @@ export default class ShipList extends React.Component {
                                 <form className="form-inline">
                                     <input onChange={this.inputChangeDirection} value={this.state.searchDirection} name="searchDirection" type="text"
                                            className="form-control mb-2 mr-sm-2" id="inlineInputDirection" placeholder="Direction" />
-                                    <input type="text" className="form-control mb-2 mr-sm 2" id="inlineInputDate" placeholder="Departure" />
-                                    <button type="submit" className="btn btn-outline-primary mb-2">Find</button>
                                 </form>
                             </div>
                             <table className="table">

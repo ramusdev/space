@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import Notification from "../Components/Notification/Notification.js";
 
 export default class ShipAdd extends React.Component {
