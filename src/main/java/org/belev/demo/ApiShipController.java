@@ -4,7 +4,9 @@ import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -24,19 +26,22 @@ public class ApiShipController {
 
     // Find ship
     @GetMapping(value = "/search")
-    public JSONArray search(@RequestParam String direction, Timestamp departure) {
+    public JSONArray search(@RequestParam String direction, String departure) {
 
         List<Ship> ships;
         JSONArray jsonArray = new JSONArray();
 
-        System.out.println(direction);
-        System.out.println(departure);
+        // System.out.println(direction);
+        // System.out.println(departure);
         System.out.println("------------>");
+        System.out.println(departure.toString());
 
-        Timestamp tms = Timestamp.valueOf("2020-10-10 10:10:10");
-        System.out.println(tms);
+        // Timestamp tms = Timestamp.valueOf(departure);
+        // System.out.println(tms);
 
-        ships = shipRepository.findShipsByDirectionAndDeparture(tms);
+
+        LocalDateTime date = LocalDateTime.parse(departure);
+        ships = shipRepository.findShipsByDirectionAndDeparture(date);
 
         System.out.println(ships);
 

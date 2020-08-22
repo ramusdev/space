@@ -2,9 +2,13 @@ package org.belev.demo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Date;
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Timestamp;
@@ -18,10 +22,11 @@ public class Ship implements Serializable {
     private int price;
     private int seats;
     private int seatsAvailable;
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd.MM.yyyy HH:mm:ss")
-    private Timestamp departureDate;
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd.MM.yyyy HH:mm:ss")
-    private Timestamp arrivalDate;
+    // @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd.MM.yyyy HH:mm:ss")
+    private LocalDateTime departureDate;
+    // @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd.MM.yyyy HH:mm:ss")
+    @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss")
+    private LocalDateTime arrivalDate;
     @Transient
     @JsonIgnoreProperties("ship")
     private List<Tourist> touristsAdded = new ArrayList<Tourist>();
@@ -33,7 +38,7 @@ public class Ship implements Serializable {
 
     private Ship() {}
 
-    public Ship(String direction, int price, int seats, Timestamp departureDate, Timestamp arrivalDate, List<Tourist> touristsAdded) {
+    public Ship(String direction, int price, int seats, LocalDateTime departureDate, LocalDateTime arrivalDate, List<Tourist> touristsAdded) {
         this.direction = direction;
         this.price = price;
         this.seats = seats;
@@ -76,11 +81,11 @@ public class Ship implements Serializable {
         return this.tourists;
     }
 
-    public Timestamp getDepartureDate() {
+    public LocalDateTime getDepartureDate() {
         return departureDate;
     }
 
-    public Timestamp getArrivalDate() {
+    public LocalDateTime getArrivalDate() {
         return arrivalDate;
     }
 
@@ -108,11 +113,11 @@ public class Ship implements Serializable {
         this.seatsAvailable = seatsAvailable;
     }
 
-    public void setDepartureDate(Timestamp departureDate) {
+    public void setDepartureDate(LocalDateTime departureDate) {
         this.departureDate = departureDate;
     }
 
-    public void setArrivalDate(Timestamp arrivalDate) {
+    public void setArrivalDate(LocalDateTime arrivalDate) {
         this.arrivalDate = arrivalDate;
     }
 
