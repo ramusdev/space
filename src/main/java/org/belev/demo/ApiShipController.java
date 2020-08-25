@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -34,16 +35,17 @@ public class ApiShipController {
         // System.out.println(direction);
         // System.out.println(departure);
         System.out.println("------------>");
-        System.out.println(departure.toString());
+        // System.out.println(departure.toString());
 
         // Timestamp tms = Timestamp.valueOf(departure);
-        // System.out.println(tms);
+        // System.out.println(departure.toString());
 
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+        LocalDateTime localDateTime = LocalDateTime.parse(departure, dateTimeFormatter);
 
-        LocalDateTime date = LocalDateTime.parse(departure);
-        ships = shipRepository.findShipsByDirectionAndDeparture(date);
+        ships = shipRepository.findShipsByDirectionAndDeparture(localDateTime);
 
-        System.out.println(ships);
+        // System.out.println(ships);
 
         for (Ship ship : ships) {
             System.out.println(ship.getDirection());

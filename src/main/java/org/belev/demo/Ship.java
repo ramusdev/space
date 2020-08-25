@@ -23,9 +23,11 @@ public class Ship implements Serializable {
     private int seats;
     private int seatsAvailable;
     // @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd.MM.yyyy HH:mm:ss")
+    // @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd.MM.yyyy HH:mm:ss")
     private LocalDateTime departureDate;
-    // @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd.MM.yyyy HH:mm:ss")
-    @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss")
+    // @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd.MM.yyyy HH:mm:ss")
     private LocalDateTime arrivalDate;
     @Transient
     @JsonIgnoreProperties("ship")

@@ -11,5 +11,6 @@ import java.sql.Timestamp;
 
 interface ShipRepository extends CrudRepository<Ship, Long> {
     @Query(value = "SELECT * FROM ship WHERE departure_date = :departure", nativeQuery = true)
+    // List<Ship> findShipsByDirectionAndDeparture(@Param("departure") LocalDateTime departure);
     List<Ship> findShipsByDirectionAndDeparture(@Param("departure") LocalDateTime departure);
 }
