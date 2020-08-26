@@ -41,11 +41,9 @@ public class ApiShipController {
         // System.out.println(departure.toString());
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-        LocalDateTime localDateTime = LocalDateTime.parse(departure, dateTimeFormatter);
+        LocalDateTime departureDateTime = LocalDateTime.parse(departure, dateTimeFormatter);
 
-        ships = shipRepository.findShipsByDirectionAndDeparture(localDateTime);
-
-        // System.out.println(ships);
+        ships = shipRepository.findShipsByDirectionAndDeparture(direction, departureDateTime);
 
         for (Ship ship : ships) {
             System.out.println(ship.getDirection());
