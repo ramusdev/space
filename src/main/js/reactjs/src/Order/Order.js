@@ -114,17 +114,15 @@ export default class Order extends React.Component {
         url.searchParams.set("direction", this.state.direction);
         url.searchParams.set("departure", this.state.departure);
 
-        console.log(url.toString());
-
-        // const urlRequest = "http://127.0.0.1:8080/api/ship/search/" + value;
         fetch(url)
             .then(res => res.json())
             .then(res => {
-                // if(res.length) {
-                    // this.setState({
-                        //ships: res
-                    // });
-                // }
+                if(res.length) {
+                    this.setState({
+                        ships: res
+                    });
+                }
+                console.log(res);
             });
     }
 }

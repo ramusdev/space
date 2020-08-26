@@ -29,39 +29,38 @@ public class ApiShipController {
     @GetMapping(value = "/search")
     public JSONArray search(@RequestParam String direction, String departure) {
 
-        List<Ship> ships;
+        List<Ship> ships = new ArrayList<Ship>();
+        Iterable<Ship> shipsIterable;
         JSONArray jsonArray = new JSONArray();
+        LocalDateTime departureDateTime = LocalDateTime.now();
 
-        // System.out.println(direction);
-        // System.out.println(departure);
-        System.out.println("------------>");
-        // System.out.println(departure.toString());
-
-        // Timestamp tms = Timestamp.valueOf(departure);
-        // System.out.println(departure.toString());
-
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-        LocalDateTime departureDateTime = LocalDateTime.parse(departure, dateTimeFormatter);
-
-        ships = shipRepository.findShipsByDirectionAndDeparture(direction, departureDateTime);
-
-        for (Ship ship : ships) {
-            System.out.println(ship.getDirection());
+        if (departure != null && departure.length() != 0) {
+            System.out.println("Firt date formatter --->");
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+            departureDateTime = LocalDateTime.parse(departure, dateTimeFormatter);
         }
 
-        /*
-        if (direction != null) {
-            ships = shipRepository.findShipsByDirectionAndDeparture(departure);
-            for (Ship ship : ships) {
-                jsonArray.appendElement(ship);
-            }
-        } else {
-            Iterable<Ship> shipsIterable = shipRepository.findAll();
+        if (direction.length() != 0 && departure.length() != 0) {
+            System.out.println("Second --->");
+            ships = shipRepository.findShipsByDirectionAndDeparture(direction, departureDateTime);
+        } else if (direction.length() == 0 && departure.length() == 0) {
+            System.out.println("Third --->");
+            shipsIterable = shipRepository.findAll();
             for (Ship ship : shipsIterable) {
                 jsonArray.appendElement(ship);
             }
+        } else if (direction.length() == 0) {
+            System.out.println("The forth --->");
+            ships = shipRepository.findShipsByDeparture(departureDateTime);
+        } else if (departure.length() == 0) {
+            System.out.println("The fifth --->");
+            ships = shipRepository.findShipsByDirection(direction);
         }
-        */
+
+        for (Ship ship : ships) {
+            jsonArray.appendElement(ship);
+            System.out.println(ship.getDirection());
+        }
 
         return jsonArray;
     }
