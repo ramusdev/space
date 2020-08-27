@@ -2,7 +2,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 import Notification from "../Components/Notification/Notification";
 
-export default class Order extends React.Component {
+export default class OrderList extends React.Component {
 
     constructor(props) {
         super(props);
@@ -63,7 +63,9 @@ export default class Order extends React.Component {
                                         <td>{item.departureDate}</td>
                                         <td>{item.arrivalDate}</td>
                                         <td>
-                                            <button type="button" className="btn btn-sm btn-outline-success">Order</button>
+                                            <Link to={`/order/add/${item.id}`}>
+                                                <button type="button" className="btn btn-sm btn-outline-success">Order</button>
+                                            </Link>
                                             <Link to={`/ship/${item.id}`}>
                                                 <button type="button" className="btn btn-sm btn-outline-primary">Detail</button>
                                             </Link>

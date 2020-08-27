@@ -9,7 +9,8 @@ import ShipAdd from "./Ship/ShipAdd";
 import ShipList from "./Ship/ShipList";
 import ShipSingle from "./Ship/ShipSingle";
 import ShipEdit from "./Ship/ShipEdit";
-import Order from "./Order/Order";
+import OrderList from "./Order/OrderList";
+import OrderAddTourist from "./Order/OrderAddTourist";
 
 function App() {
 
@@ -27,7 +28,8 @@ function App() {
               <Route path="/ship/list" exact component={ShipList} />
               <Route path="/ship/:id" exact component={ShipSingle} />
               <Route path="/ship/edit/:id" exact component={ShipEdit} />
-              <Route path="/order" exact component={Order} />
+              <Route path="/order" exact component={OrderList} />
+              <Route path="/order/add/:id" exact component={OrderAddTourist} />
             </Switch>
           </div>
         </BrowserRouter>
