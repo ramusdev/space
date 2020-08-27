@@ -1,10 +1,12 @@
 package org.belev.demo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -17,7 +19,8 @@ public class Tourist implements Serializable {
     private String description;
     private String gender;
     private String country;
-    private String dateOfBirth;
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd.MM.yyyy HH:mm:ss")
+    private LocalDateTime dateOfBirth;
     @Transient
     private Long shipIdentifier;
     // cascade = CascadeType.ALL
@@ -29,7 +32,7 @@ public class Tourist implements Serializable {
 
     private Tourist() {}
 
-    public Tourist(String firstName, String lastName, String description, String gender, String country, String dateOfBirth, long shipIdentifier, Ship ship) {
+    public Tourist(String firstName, String lastName, String description, String gender, String country, LocalDateTime dateOfBirth, long shipIdentifier, Ship ship) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.description = description;
@@ -40,6 +43,7 @@ public class Tourist implements Serializable {
         this.ship = ship;
     }
 
+    /*
     public Tourist(String firstName, String lastName, String description, String gender, String country, String dateOfBirth) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -48,6 +52,7 @@ public class Tourist implements Serializable {
         this.country = country;
         this.dateOfBirth = dateOfBirth;
     }
+    */
 
     @Override
     public boolean equals(Object o) {
@@ -113,11 +118,11 @@ public class Tourist implements Serializable {
         this.country = country;
     }
 
-    public String getDateOfBirth() {
+    public LocalDateTime getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(LocalDateTime dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

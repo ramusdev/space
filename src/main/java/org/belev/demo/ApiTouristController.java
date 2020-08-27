@@ -53,7 +53,10 @@ public class ApiTouristController {
             int seats = ship.getSeatsAvailable();
 
             if (seats < 1) {
-                // return "{\"success\":0, \"message\":\"Error! Not enough seats!\"}";
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("success", 0);
+                jsonObject.put("message", "Error! Not enough seats!");
+                return jsonObject;
             }
 
             ship.setSeatsAvailable(seats - 1);
@@ -66,23 +69,9 @@ public class ApiTouristController {
         Tourist savedTourist = touristRepository.save(tourist);
         Long savedTouristId = savedTourist.getId();
 
-        //System.out.println(savedTouristId);
-        // Redirect
-        // RedirectView redirectView = new RedirectView("/tourist/edit/1", true);
-        // redirectView.setContextRelative(true);
-        // redirectView.setUrl("/update/{savedTouristId}");
-        // return "{\"success\":1, \"message\":\"Success! Tourist added!\"}";
-        // return new RedirectView("/tourist/edit/28");
-
-        // response.setHeader("Location", "http://127.0.0.1:3000/tourist/edit/2");
-        // response.setStatus(302);
-        // response.sendRedirect("http://127.0.0.1:3000/tourist/edit/2");
-
-        // response.setHeader("Location", "http://127.0.0.1:3000/tourist/edit/100");
-        // response.setStatus(302);
-        // return "{\"success\":1, \"message\":\"Success! Tourist edited!\"}";
-
         JSONObject jsonObject = new JSONObject();
+        jsonObject.put("success", 1);
+        jsonObject.put("message", "Success! Tourist added!");
         jsonObject.put("redirect", "/tourist/edit/" + savedTouristId);
 
         return jsonObject;
@@ -94,16 +83,19 @@ public class ApiTouristController {
         long shipUpdatedId = updatedTourist.getShipIdentifier();
         if (shipUpdatedId != 0) {
             Ship ship = shipRepository.findById(shipUpdatedId).get();
+            int seats = ship.getSeatsAvailable();
 
-            if (! this.updateSeats(updatedTourist)) {
+            if (seats < 1) {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("success", 0);
                 jsonObject.put("message", "Error! Not enough seats!");
                 return jsonObject;
             }
 
+            this.updateSeats(updatedTourist);
             updatedTourist.setShip(ship);
         } else {
+            this.updateSeats(updatedTourist);
             updatedTourist.setShip(null);
         }
 
@@ -121,9 +113,18 @@ public class ApiTouristController {
         Ship shipOld = touristOld.getShip();
         Long shipUpdatedId = touristUpdated.getShipIdentifier();
 
+        /*
         if (touristUpdated.getShip() != null) {
             Ship ship = touristUpdated.getShip();
             if (ship.getSeatsAvailable() < 1 && !ship.equals(shipOld)) {
+                return false;
+            }
+        }
+        */
+
+        if (touristUpdated.getShip() != null) {
+            Ship ship = touristUpdated.getShip();
+            if (ship.equals(shipOld)) {
                 return false;
             }
         }

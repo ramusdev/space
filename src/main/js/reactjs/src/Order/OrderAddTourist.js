@@ -63,7 +63,7 @@ export default class OrderAddTourist extends React.Component {
                                            onChange={this.handleChangeInput} value={dateOfBirth}></input>
                                 </div>
                                 <div className="form-group">
-                                    <input type="text" className="form-control" name="ship" placeholder="Date of birth"
+                                    <input type="text" className="form-control" name="shipIdentifier" placeholder="Date of birth"
                                            onChange={this.handleChangeInput} value={ship.direction} readOnly></input>
                                 </div>
                                 <div className="form-group">
@@ -109,7 +109,8 @@ export default class OrderAddTourist extends React.Component {
             .then(res => res.json())
             .then(res => {
                 this.setState({
-                    ship: res
+                    ship: res,
+                    shipIdentifier: res.id
                 })
             })
     }
@@ -142,10 +143,10 @@ export default class OrderAddTourist extends React.Component {
         })
             .then(res => res.json())
             .then(res => {
-                // console.log(res);
+                console.log(res);
                 // this.fetchShips();
                 // this.notificationComponent.current.showMessage(res.message, res.success);
-                this.props.history.push(res.redirect);
+                // this.props.history.push(res.redirect);
             });
     }
 }
