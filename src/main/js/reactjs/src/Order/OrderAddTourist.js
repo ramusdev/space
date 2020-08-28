@@ -128,7 +128,6 @@ export default class OrderAddTourist extends React.Component {
     handleSubmit(event) {
         console.log("Form submited -->");
         event.preventDefault();
-        // console.log(JSON.stringify(this.state));
 
         const url = "http://127.0.0.1:8080/api/tourist/add";
         fetch(url, {
@@ -143,10 +142,13 @@ export default class OrderAddTourist extends React.Component {
         })
             .then(res => res.json())
             .then(res => {
-                console.log(res);
-                // this.fetchShips();
-                // this.notificationComponent.current.showMessage(res.message, res.success);
-                // this.props.history.push(res.redirect);
+                if (res.redirect) {
+                    console.log(res);
+                    this.props.history.push(res.redirect);
+                } else {
+                    console.log(res);
+                    this.notificationComponent.current.showMessage(res.message, res.success);
+                }
             });
     }
 }

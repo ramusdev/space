@@ -139,9 +139,6 @@ export default class TouristAdd extends React.Component {
                     console.log(res);
                     this.notificationComponent.current.showMessage(res.message, res.success);
                 }
-                // this.fetchShips();
-                // this.notificationComponent.current.showMessage(res.message, res.success);
-                // this.props.history.push(res.redirect);
             });
     }
 }
