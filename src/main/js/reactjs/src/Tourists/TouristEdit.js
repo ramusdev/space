@@ -79,7 +79,7 @@ export default class TouristEdit extends React.Component {
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="about">Information about tourist</label>
-                                    <textarea type="about" className="form-control" id="about" name="description" rows="3" placeholder="Some information about passenger"
+                                    <textarea type="about" className="form-control" id="about" name="description" rows="10" placeholder="Some information about passenger"
                                               onChange={this.handleChange} value={description}></textarea>
                                 </div>
                                 <button className="btn btn-outline-primary" type="submit">Update</button>

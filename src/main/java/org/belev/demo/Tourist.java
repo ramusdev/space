@@ -3,6 +3,7 @@ package org.belev.demo;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,6 +17,7 @@ public class Tourist implements Serializable {
     private Long id;
     private String firstName;
     private String lastName;
+    @Type(type = "text")
     private String description;
     private String gender;
     private String country;
@@ -30,7 +32,7 @@ public class Tourist implements Serializable {
     @JsonIgnoreProperties("tourists")
     private Ship ship = null;
 
-    private Tourist() {}
+    public Tourist() {}
 
     public Tourist(String firstName, String lastName, String description, String gender, String country, LocalDateTime dateOfBirth, long shipIdentifier, Ship ship) {
         this.firstName = firstName;
@@ -142,16 +144,8 @@ public class Tourist implements Serializable {
         this.shipIdentifier = shipId;
     }
 
-    /*
     @Override
     public String toString() {
-        return "Employee{" +
-                "id = " + id +
-                ", firstName = " + firstName + '\'' +
-                ", lastName = " + lastName + '\'' +
-                ", description = " + description + '\'' +
-                ", ship = " + ship + " " +
-                '}';
+        return "Tourist: " + getFirstName();
     }
-    */
 }

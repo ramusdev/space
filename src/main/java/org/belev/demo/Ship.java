@@ -38,7 +38,7 @@ public class Ship implements Serializable {
     @JsonIgnoreProperties("ship")
     private List<Tourist> tourists = new ArrayList<Tourist>();
 
-    private Ship() {}
+    public Ship() {}
 
     public Ship(String direction, int price, int seats, LocalDateTime departureDate, LocalDateTime arrivalDate, List<Tourist> touristsAdded) {
         this.direction = direction;
