@@ -20,8 +20,8 @@ import java.util.Locale;
 public class DatabaseSeeder {
     private ShipRepository shipRepository;
     private TouristRepository touristRepository;
-    private int numberSeedOfTourist = 1000;
-    private int numberSeedOfShip = 500;
+    private int numberSeedOfTourist = 50;
+    private int numberSeedOfShip = 5;
 
     public DatabaseSeeder(ShipRepository shipRepository, TouristRepository touristRepository) {
         this.shipRepository = shipRepository;
@@ -45,9 +45,10 @@ public class DatabaseSeeder {
     public void seedShip() {
         Faker faker = new Faker();
         String direction = faker.space().planet();
-        int seats = faker.number().numberBetween(1, 100);
+        int seats = faker.number().numberBetween(10, 100);
         int price = faker.number().numberBetween(10, 1000);
         int daysToAdd = faker.number().numberBetween(1, 365);
+        int touristsGenerate = faker.number().numberBetween(1, 10);
 
         Date currentDate = new Date();
         Date arrivalDate = DateUtils.addDays(currentDate, daysToAdd);
@@ -59,10 +60,25 @@ public class DatabaseSeeder {
         Ship ship = new Ship();
         ship.setDirection(direction);
         ship.setSeats(seats);
-        ship.setSeatsAvailable(seats);
         ship.setPrice(price);
         ship.setArrivalDate(arrivalDateLocal);
         ship.setDepartureDate(departureDateLocal);
+
+        int seatsAvailable = seats - touristsGenerate;
+        ship.setSeatsAvailable(seatsAvailable);
+
+        Tourist tourist;
+
+        for (int i = 0; i < touristsGenerate; i++) {
+            boolean isShipExist = false;
+            do {
+                long touristId = (long)faker.number().numberBetween(1, numberSeedOfTourist);
+                tourist = touristRepository.findById(touristId).get();
+                isShipExist = tourist.getShip() != null ? true : false;
+            } while (isShipExist);
+
+            ship.addTourist(tourist);
+        }
 
         shipRepository.save(ship);
 
