@@ -1,2 +1,3 @@
 # Space test task
-> Java (Spring Boot), JavaScript (React)
+> Java (Spring Boot)
+> JavaScript (React)
