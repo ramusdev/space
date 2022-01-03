@@ -1,4 +1,4 @@
 # Space
 
-> Java (Spring Boot)
-> JavaScript (React)
+Java (Spring Boot)
+JavaScript (React)
