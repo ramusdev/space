@@ -1,5 +1,4 @@
-# Space test task
+# Space
 
 > Java (Spring Boot)
-
 > JavaScript (React)
